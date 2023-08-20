@@ -2,11 +2,10 @@
 #include <YSI-Includes\YSI_Coding\y_hooks>
 
 #define MAX_BENCHS (1000)
-#define DIALOG_DROGAS1 (45)
 
 #define DIALOG_ARMAS (58)
 #define DIALOG_MUNI (56)
-
+ 
 enum coordsBenchs{ 
     Float:x,
     Float:y,
@@ -76,10 +75,6 @@ stock WORK_Prox(playerid) {
                     case 3: 
                     {
                         ShowPlayerDialog(playerid, DIALOG_MUNI, DIALOG_STYLE_LIST, "PRODUCAO DE MUNI.", "Muni. de Rifle \t1 CAPSULA \t5 POLVORA \nMuni. de Pistola\t1 CAPSULA\t2 POLVORA", "CRIAR", "CANCELAR");
-                    }
-                    case 2: 
-                    {
-                        ShowPlayerDialog(playerid, DIALOG_DROGAS, DIALOG_STYLE_LIST, "PRODUCAO DE DROGAS.", "COCA \t1 FOLHA \t1 QUIMICO", "CRIAR", "CANCELAR");
                     }
                 }
             }

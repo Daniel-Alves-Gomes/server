@@ -80,12 +80,13 @@ public GET_PlayerStats(playerid) {
 
 public SET_PunishKick(player_id, id) {
     new fSend[150];
-    new hexId';
+    new hexId;
     sscanf(arguments, "d", hexId);
     if(IsPlayerConnected(hexId)) {
         format(fSend, sizeof(fSend), "O jogador com id %i (SESSAO) kickado.", hexId);
         Notificar(player_id, "sucesso", "KICK", fSend, 5000);
         cef_focus_browser(player_id, CEF_HUD2, false);
+        cef_destroy_browser(playerid, CEF_HUD2);
         Kick(hexId);
     }
     return 1;
