@@ -17,7 +17,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
             PesoT[playerid] = 0;
         } else if(response) {
             switch(listitem) {
-                
+            }
         }
     }
     return 0;

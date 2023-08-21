@@ -746,12 +746,6 @@ public OnPlayerSpawn(playerid)
 	return 1;
 }
 
-public OnPlayerExitVehicle(playerid, vehicleid) {
-	SetPVarInt(playerid, "isInVehicle", 0);
-	SetPVarInt(playerid, "vehicleIdUser", 0);
-	return 1;
-}
-
 public OnPlayerUpdate(playerid) {
 	new carro = GetPlayerVehicleID(playerid);
 	new mot, lu, alar, por, cap, porma, ob;
@@ -759,6 +753,9 @@ public OnPlayerUpdate(playerid) {
 	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER) {
 		SetPVarInt(playerid, "isInVehicle", 1);
 		SetPVarInt(playerid, "vehicleIdUser", carro);
+	} else {
+		SetPVarInt(playerid, "isInVehicle", 0);
+		SetPVarInt(playerid, "vehicleIdUser", 0);
 	}
 	if(GetVehicleModel(GetPlayerVehicleID(playerid)) == 509 || GetVehicleModel(GetPlayerVehicleID(playerid)) == 481 || GetVehicleModel(GetPlayerVehicleID(playerid)) == 510){
 		

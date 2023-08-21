@@ -9,7 +9,7 @@ forward GET_PlayerStats(playerid);
 forward GET_PlayerPunish(playerid);
 forward V_Ban(playerid);
 forward SET_PunishBan(player_id, const arguments[]);
-forward SET_PunishKick(player_id, id);
+forward SET_PunishKick(player_id, const id_client[]);
 
 new TimerADMIN[MAX_PLAYERS];
 
@@ -78,15 +78,15 @@ public GET_PlayerStats(playerid) {
     return 1;
 }
 
-public SET_PunishKick(player_id, id) {
+public SET_PunishKick(player_id, const id_client[]) {
     new fSend[150];
     new hexId;
-    sscanf(arguments, "d", hexId);
+    sscanf(id_client, "d", hexId);
     if(IsPlayerConnected(hexId)) {
         format(fSend, sizeof(fSend), "O jogador com id %i (SESSAO) kickado.", hexId);
         Notificar(player_id, "sucesso", "KICK", fSend, 5000);
         cef_focus_browser(player_id, CEF_HUD2, false);
-        cef_destroy_browser(playerid, CEF_HUD2);
+        cef_destroy_browser(player_id, CEF_HUD2);
         Kick(hexId);
     }
     return 1;

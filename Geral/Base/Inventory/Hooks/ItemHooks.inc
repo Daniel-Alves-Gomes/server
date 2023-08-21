@@ -1,5 +1,6 @@
 #include <a_samp>
 #include <YSI-Includes\YSI_Coding\y_hooks>
+#include "../Geral/Base/Inventory/Hooks/DropHooks.inc"
 
 new ItemS[MAX_PLAYERS][40];
 new QS[MAX_PLAYERS][40];

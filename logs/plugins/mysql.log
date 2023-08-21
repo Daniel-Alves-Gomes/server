@@ -4501,3 +4501,6 @@
 [18:19:03] [WARNING] mysql_connect: no password specified (../Geral/Server/Database_Central.inc:14 -> C:\Users\danie\Desktop\nd\server\pawno\include\YSI-Includes\YSI_Coding\y_hooks\..\y_cgen\y_cgen.inc:132)
 [18:21:28] [ERROR] cache_get_value_name: field 'ip_code' not found (../Geral/Base/Groups/Group.inc:67)
 [18:24:18] [ERROR] cache_get_value_name: field 'ip_code' not found (../Geral/Base/Groups/Group.inc:67)
+[21:37:43] [WARNING] mysql_connect: no password specified (../Geral/Server/Database_Central.inc:14 -> C:\Users\danie\Desktop\nd\server\pawno\include\YSI-Includes\YSI_Coding\y_hooks\..\y_cgen\y_cgen.inc:132)
+[21:38:09] [ERROR] cache_get_value_name: field 'ip_code' not found (../Geral/Base/Groups/Group.inc:67)
+[21:41:40] [ERROR] cache_get_value_name: field 'ip_code' not found (../Geral/Base/Groups/Group.inc:67)
