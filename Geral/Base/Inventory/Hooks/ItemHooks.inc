@@ -96,19 +96,19 @@ public Inventory_Load(playerid) {
 }
 
 stock AddItem(playerid, slot, id, quantidade) {
-    new i = 0;
-    while(i < 39) [
-        if(ItemS[playerid][i] == 0) {
+    new i;
+    for (i = 0; i < sizeof(ItemS[playerid]); i++) {
+        if (ItemS[playerid][i] == 0) {
             mysql_format(ConexaoSQL, Query, sizeof(Query), "UPDATE `inventory_sessions` SET \
-            `id%i`='%i', \
-            `peso%i`='%i' \
-            WHERE `hex`='%i'", slot, id, slot, quantidade, hexUser[playerid][hex]);
+                `id%i`='%i', \
+                `peso%i`='%i' \
+                WHERE `hex`='%i'", slot, id, slot, quantidade, hexUser[playerid][hex]);
             mysql_query(ConexaoSQL, Query);
-            id = 0;
-            i = 0;
+            ItemS[playerid][i] = id;
+            QS[playerid][i] = quantidade;
             break;
         }
-    ]
+    }
     return 1;
 }
 
@@ -135,204 +135,9 @@ stock RemoveItem(playerid, slot, quantidade) {
 }
 
 stock ItemVerify(playerid, id, quant) {
-    if(ItemS[playerid][0] == id) {
-        if(QS[playerid][0] == quant) {
-            SetPVarInt(playerid, "removeSlot", 1);
-            return 1;
-        }
-    } else if(ItemS[playerid][1] == id) {
-        if(QS[playerid][1] == quant) {
-            SetPVarInt(playerid, "removeSlot", 2);
-            return 1;
-        }
-    } else if(ItemS[playerid][2] == id) {
-        if(QS[playerid][2] == quant) {
-            SetPVarInt(playerid, "removeSlot", 3);
-            return 1;
-        }
-    } else if(ItemS[playerid][3] == id) {
-        if(QS[playerid][3] == quant) {
-            SetPVarInt(playerid, "removeSlot", 4);
-            return 1;
-        }
-    } else if(ItemS[playerid][4] == id) {
-        if(QS[playerid][4] == quant) {
-            SetPVarInt(playerid, "removeSlot", 5);
-            return 1;
-        }
-    } else if(ItemS[playerid][5] == id) {
-        if(QS[playerid][5] == quant) {
-            SetPVarInt(playerid, "removeSlot", 6);
-            return 1;
-        }
-    } else if(ItemS[playerid][6] == id) {
-        if(QS[playerid][6] == quant) {
-            SetPVarInt(playerid, "removeSlot", 7);
-            return 1;
-        }
-    } else if(ItemS[playerid][7] == id) {
-        if(QS[playerid][7] == quant) {
-            SetPVarInt(playerid, "removeSlot", 8);
-            return 1;
-        }
-    } else if(ItemS[playerid][8] == id) {
-        if(QS[playerid][8] == quant) {
-            SetPVarInt(playerid, "removeSlot", 9);
-            return 1;
-        }
-    } else if(ItemS[playerid][9] == id) {
-        if(QS[playerid][9] == quant) {
-            SetPVarInt(playerid, "removeSlot", 10);
-            return 1;
-        }
-    } else if(ItemS[playerid][10] == id) {
-        if(QS[playerid][10] == quant) {
-            SetPVarInt(playerid, "removeSlot", 11);
-            return 1;
-        }
-    } else if(ItemS[playerid][11] == id) {
-        if(QS[playerid][11] == quant) {
-            SetPVarInt(playerid, "removeSlot", 12);
-            return 1;
-        }
-    } else if(ItemS[playerid][12] == id) {
-        if(QS[playerid][12] == quant) {
-            SetPVarInt(playerid, "removeSlot", 13);
-            return 1;
-        }
-    } else if(ItemS[playerid][13] == id) {
-        if(QS[playerid][13] == quant) {
-            SetPVarInt(playerid, "removeSlot", 14);
-            return 1;
-        }
-    } else if(ItemS[playerid][14] == id) {
-        if(QS[playerid][14] == quant) {
-            SetPVarInt(playerid, "removeSlot", 15);
-            return 1;
-        }
-    } else if(ItemS[playerid][15] == id) {
-        if(QS[playerid][15] == quant) {
-            SetPVarInt(playerid, "removeSlot", 16);
-            return 1;
-        }
-    } else if(ItemS[playerid][16] == id) {
-        if(QS[playerid][16] == quant) {
-            SetPVarInt(playerid, "removeSlot", 17);
-            return 1;
-        }
-    } else if(ItemS[playerid][17] == id) {
-        if(QS[playerid][17] == quant) {
-            SetPVarInt(playerid, "removeSlot", 18);
-            return 1;
-        }
-    } else if(ItemS[playerid][18] == id) {
-        if(QS[playerid][18] == quant) {
-            SetPVarInt(playerid, "removeSlot", 19);
-            return 1;
-        }
-    } else if(ItemS[playerid][19] == id) {
-        if(QS[playerid][19] == quant) {
-            SetPVarInt(playerid, "removeSlot", 20);
-            return 1;
-        }
-    } else if(ItemS[playerid][20] == id) {
-        if(QS[playerid][20] == quant) {
-            SetPVarInt(playerid, "removeSlot", 21);
-            return 1;
-        }
-    } else if(ItemS[playerid][21] == id) {
-        if(QS[playerid][21] == quant) {
-            SetPVarInt(playerid, "removeSlot", 22);
-            return 1;
-        }
-    } else if(ItemS[playerid][22] == id) {
-        if(QS[playerid][22] == quant) {
-            SetPVarInt(playerid, "removeSlot", 23);
-            return 1;
-        }
-    } else if(ItemS[playerid][23] == id) {
-        if(QS[playerid][23] == quant) {
-            SetPVarInt(playerid, "removeSlot", 24);
-            return 1;
-        }
-    } else if(ItemS[playerid][24] == id) {
-        if(QS[playerid][24] == quant) {
-            SetPVarInt(playerid, "removeSlot", 25);
-            return 1;
-        }
-    } else if(ItemS[playerid][25] == id) {
-        if(QS[playerid][25] == quant) {
-            SetPVarInt(playerid, "removeSlot", 26);
-            return 1;
-        }
-    } else if(ItemS[playerid][26] == id) {
-        if(QS[playerid][26] == quant) {
-            SetPVarInt(playerid, "removeSlot", 27);
-            return 1;
-        }
-    } else if(ItemS[playerid][27] == id) {
-        if(QS[playerid][27] == quant) {
-            SetPVarInt(playerid, "removeSlot", 28);
-            return 1;
-        }
-    } else if(ItemS[playerid][28] == id) {
-        if(QS[playerid][28] == quant) {
-            SetPVarInt(playerid, "removeSlot", 29);
-            return 1;
-        }
-    } else if(ItemS[playerid][29] == id) {
-        if(QS[playerid][29] == quant) {
-            SetPVarInt(playerid, "removeSlot", 30);
-            return 1;
-        }
-    } else if(ItemS[playerid][30] == id) {
-        if(QS[playerid][30] == quant) {
-            SetPVarInt(playerid, "removeSlot", 31);
-            return 1;
-        }
-    } else if(ItemS[playerid][31] == id) {
-        if(QS[playerid][31] == quant) {
-            SetPVarInt(playerid, "removeSlot", 32);
-            return 1;
-        }
-    } else if(ItemS[playerid][32] == id) {
-        if(QS[playerid][32] == quant) {
-            SetPVarInt(playerid, "removeSlot", 33);
-            return 1;
-        }
-    } else if(ItemS[playerid][33] == id) {
-        if(QS[playerid][33] == quant) {
-            SetPVarInt(playerid, "removeSlot", 34);
-            return 1;
-        }
-    } else if(ItemS[playerid][34] == id) {
-        if(QS[playerid][34] == quant) {
-            SetPVarInt(playerid, "removeSlot", 35);
-            return 1;
-        }
-    } else if(ItemS[playerid][35] == id) {
-        if(QS[playerid][35] == quant) {
-            SetPVarInt(playerid, "removeSlot", 36);
-            return 1;
-        }
-    } else if(ItemS[playerid][36] == id) {
-        if(QS[playerid][36] == quant) {
-            SetPVarInt(playerid, "removeSlot", 37);
-            return 1;
-        }
-    } else if(ItemS[playerid][37] == id) {
-        if(QS[playerid][37] == quant) {
-            SetPVarInt(playerid, "removeSlot", 38);
-            return 1;
-        }
-    } else if(ItemS[playerid][38] == id) {
-        if(QS[playerid][38] == quant) {
-            SetPVarInt(playerid, "removeSlot", 39);
-            return 1;
-        }
-    } else if(ItemS[playerid][39] == id) {
-        if(QS[playerid][39] == quant) {
-            SetPVarInt(playerid, "removeSlot", 40);
+    for (new i = 0; i < sizeof(ItemS[playerid]); i++) {
+        if (ItemS[playerid][i] == id && QS[playerid][i] == quant) {
+            SetPVarInt(playerid, "removeSlot", i + 1); // Índices de slots começam em 1
             return 1;
         }
     }
