@@ -97,6 +97,38 @@ public Inventory_Load(playerid) {
     return 1;
 }
 
+stock S_PlayerType(playerid, const type[], bool:typeSet, Float:quantidade) {
+	if(strcmp(type, "Fome") == 0) {
+		if(typeSet == true) {
+			SetPVarInt(playerid, "fome", quantidade);
+		} else {
+			if(GetPVarInt(playerid, "fome") == 0) {} else {
+                new i = GetPVarInt(playerid, "fome");
+                SetPVarInt(playerid, "fome", i-quantidade);
+            } 
+		}
+	}
+    if(strcmp(type, "Sede") == 0) {
+		if(typeSet == true) {
+			SetPVarInt(playerid, "Sede", quantidade);
+		} else {
+			if(GetPVarInt(playerid, "Sede") == 0) {} else {
+                new i = GetPVarInt(playerid, "Sede");
+                SetPVarInt(playerid, "Sede", i-quantidade);
+            } 
+		}
+	} else if(strcmp(type, "Colete") == 0) {
+		if(typeSet == true) {
+			SetPlayerArmour(playerid, quantidade);
+		}
+	} else if(strcmp(type, "Vide") == 0) {
+        if(typeSet == true) {
+			SetPlayerHealth(playerid, quantidade);
+		}
+    }
+	return 1;
+}
+
 stock AddItem(playerid, id, quantidade) {
     new i;
     for (i = 0; i < sizeof(ItemS[playerid]); i++) {
@@ -176,6 +208,7 @@ stock DropItem(playerid, slot, quantidade){
 
         if (itemIndex >= 0) {
             RemoveItem(playerid, slot, quantidade);
+            Notificar(playerid, "info", "INVENTORY", "Voce dropou um item do chao.", 5000);
         }
 
     }
@@ -194,11 +227,14 @@ stock PickUpItem(playerid, itemIndex) {
         new distance = Float:VectorDistance(playerX, playerY, playerZ, itemX, itemY, 0.0);
 
         if (distance <= 2.0) {
-            AddItem(playerid, id, quantidade);
+            AddItem(playerid, DroppedItems[itemIndex][0],  DroppedItems[itemIndex][3]);
             
             DroppedItems[itemIndex][0] = 0;
             DroppedItems[itemIndex][1] = 0.0;
             DroppedItems[itemIndex][2] = 0.0;
+            DroppedItems[itemIndex][3] = 0;
+
+            Notificar(playerid, "info", "INVENTORY", "Voce pegou um item do chao.", 5000);
         }
     }
 

@@ -803,26 +803,6 @@ stock VelocidadeDoVeiculo(vehicleid) {
 	return floatround(floatsqroot(xPos[0] * xPos[0] + xPos[1] * xPos[1] + xPos[2] * xPos[2]) * 170.00);
 }
 
-stock S_PlayerType(playerid, const type[], bool:typeSet, Float:quantidade) {
-	if(strcmp(type, "Sede") == 0) {
-		if(typeSet == true) {
-			pInfo[playerid][sede] += quantidade;
-		} else {
-			pInfo[playerid][sede] -= quantidade;
-		}
-	} else if(strcmp(type, "Colete") == 0) {
-		if(typeSet == true) {
-			SetPlayerArmour(playerid, quantidade);
-		}
-	}
-	return 1;
-}
-
-stock S_Fome(playerid, Float:quantidade) {
-	pInfo[playerid][fome] += quantidade;
-	return 1;
-}
-
 CMD:tpcoords(playerid, const params[]) {
 	new Float:cds[3];
 	if(sscanf(params, "fff", cds[0], cds[1], cds[2])) SendClientMessage(playerid, 0xFF0000AA, "Usage: \"/tpcoords <x> <y> <z>\"");
