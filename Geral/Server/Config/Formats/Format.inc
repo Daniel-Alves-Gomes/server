@@ -56,7 +56,6 @@ stock TABLE_SetFConst(hexu, const tabletSet[], const ValueOne[], const ValueTwo[
 stock ITEM_NameGET(id) {
     new str[250];
     switch(id) {
-        case 50: str = "Coca-Cola";
         case 1: str = "Suco De Laranja";
         case 3: str = "Suco De Morango";
         case 4: str = "Suco De Maça";
@@ -134,7 +133,6 @@ stock ITEM_NameGET(id) {
 stock ITEM_PesoGET(id) {
     new weight = 0;
     switch(id) {
-        case 50: weight = 1; // Coca-Cola
         case 1: weight = 1; // Suco De Laranja
         case 3: weight = 1; // Suco De Morango
         case 4: weight = 1; // Suco De Maça

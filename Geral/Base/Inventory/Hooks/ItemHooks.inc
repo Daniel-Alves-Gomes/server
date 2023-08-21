@@ -1,9 +1,11 @@
 #include <a_samp>
 #include <YSI-Includes\YSI_Coding\y_hooks>
-#include "../Geral/Base/Inventory/Hooks/DropHooks.inc"
+
+#define MAX_ITEMS_ON_GROUND 10000
 
 new ItemS[MAX_PLAYERS][40];
 new QS[MAX_PLAYERS][40];
+new DroppedItems[MAX_ITEMS_ON_GROUND][4];
 
 forward Inventory_Load(playerid);
 
@@ -95,14 +97,14 @@ public Inventory_Load(playerid) {
     return 1;
 }
 
-stock AddItem(playerid, slot, id, quantidade) {
+stock AddItem(playerid, id, quantidade) {
     new i;
     for (i = 0; i < sizeof(ItemS[playerid]); i++) {
         if (ItemS[playerid][i] == 0) {
             mysql_format(ConexaoSQL, Query, sizeof(Query), "UPDATE `inventory_sessions` SET \
                 `id%i`='%i', \
                 `peso%i`='%i' \
-                WHERE `hex`='%i'", slot, id, slot, quantidade, hexUser[playerid][hex]);
+                WHERE `hex`='%i'", ItemS[playerid][i], id, ItemS[playerid][i], quantidade, hexUser[playerid][hex]);
             mysql_query(ConexaoSQL, Query);
             ItemS[playerid][i] = id;
             QS[playerid][i] = quantidade;
@@ -116,12 +118,20 @@ stock RemoveItem(playerid, slot, quantidade) {
     new Query[259];
     if(slot == 0) {
         if(GetPVarInt(playerid, "removeSlot") > 0) {
-            mysql_format(ConexaoSQL, Query, sizeof(Query), "UPDATE `inventory_sessions` SET \
-            `id%i`='0', \
-            `peso%i`='%i' \
-            WHERE `hex`='%i'", GetPVarInt(playerid, "removeSlot"), GetPVarInt(playerid, "removeSlot"), quantidade, hexUser[playerid][hex]);
-            mysql_query(ConexaoSQL, Query);
-            SetPVarInt(playerid, "removeSlot", 0);
+            if(QS[playerid][slot] => 1) {
+                mysql_format(ConexaoSQL, Query, sizeof(Query), "UPDATE `inventory_sessions` SET \
+                `peso%i`='%i' \
+                WHERE `hex`='%i'", GetPVarInt(playerid, "removeSlot"), quantidade, hexUser[playerid][hex]);
+                mysql_query(ConexaoSQL, Query);
+                SetPVarInt(playerid, "removeSlot", 0);
+            } else {
+                mysql_format(ConexaoSQL, Query, sizeof(Query), "UPDATE `inventory_sessions` SET \
+                `id%i`='0' \
+                `peso%i`='%i' \
+                WHERE `hex`='%i'", GetPVarInt(playerid, "removeSlot"), GetPVarInt(playerid, "removeSlot"), quantidade, hexUser[playerid][hex]);
+                mysql_query(ConexaoSQL, Query);
+                SetPVarInt(playerid, "removeSlot", 0);
+            }
         }
     } else {
         mysql_format(ConexaoSQL, Query, sizeof(Query), "UPDATE `inventory_sessions` SET \
@@ -142,4 +152,55 @@ stock ItemVerify(playerid, id, quant) {
         }
     }
     return 0;
+}
+
+stock DropItem(playerid, slot, quantidade){
+    if (ItemS[playerid][slot] != 0) {
+        
+        new Float:x, Float:y, Float:z;
+        GetPlayerPos(playerid, x, y, z);
+        x += 1.0;
+
+        new objectid = CreateObject(1247, x, y, z, 0.0, 0.0, 0.0);
+
+        new itemIndex = -1;
+        for (new i = 0; i < sizeof(DroppedItems); i++) {
+            if (DroppedItems[i][0] == 0) {
+                DroppedItems[i][0] = ItemS[playerid][slot];
+                DroppedItems[i][3] = QS[playerid][slot];
+                GetPlayerPos(playerid, DroppedItems[i][1], DroppedItems[i][2], 0.0);
+                itemIndex = i;
+                break;
+            }
+        }
+
+        if (itemIndex >= 0) {
+            RemoveItem(playerid, slot, quantidade);
+        }
+
+    }
+
+    return 1;
+}
+
+stock PickUpItem(playerid, itemIndex) {
+    if (DroppedItems[itemIndex][0] != 0) {
+        new playerX, playerY, playerZ;
+        GetPlayerPos(playerid, playerX, playerY, playerZ);
+
+        new itemX = DroppedItems[itemIndex][1];
+        new itemY = DroppedItems[itemIndex][2];
+
+        new distance = Float:VectorDistance(playerX, playerY, playerZ, itemX, itemY, 0.0);
+
+        if (distance <= 2.0) {
+            AddItem(playerid, id, quantidade);
+            
+            DroppedItems[itemIndex][0] = 0;
+            DroppedItems[itemIndex][1] = 0.0;
+            DroppedItems[itemIndex][2] = 0.0;
+        }
+    }
+
+    return 1;
 }
