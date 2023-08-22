@@ -5,7 +5,9 @@
 
 new ItemS[MAX_PLAYERS][40];
 new QS[MAX_PLAYERS][40];
-new DroppedItems[MAX_ITEMS_ON_GROUND][4];
+new DroppedItems[MAX_ITEMS_ON_GROUND][8];
+new Float:PosDropped[MAX_ITEMS_ON_GROUND][3];
+new Text3D:LabelDropped[MAX_ITEMS_ON_GROUND][1];
 
 forward Inventory_Load(playerid);
 
@@ -129,17 +131,18 @@ stock S_PlayerType(playerid, const type[], bool:typeSet, Float:quantidade) {
 	return 1;
 }
 
-stock AddItem(playerid, id, quantidade) {
-    new i;
-    for (i = 0; i < sizeof(ItemS[playerid]); i++) {
-        if (ItemS[playerid][i] == 0) {
+stock AddItem(playerid, slot, id, quantidade) {
+    new Query[128];
+    new i = 0;
+    while(i < 39) {
+        if(ItemS[playerid][i] == 0) {
             mysql_format(ConexaoSQL, Query, sizeof(Query), "UPDATE `inventory_sessions` SET \
-                `id%i`='%i', \
-                `peso%i`='%i' \
-                WHERE `hex`='%i'", ItemS[playerid][i], id, ItemS[playerid][i], quantidade, hexUser[playerid][hex]);
+            `id%i`='%i', \
+            `peso%i`='%i' \
+            WHERE `hex`='%i'", slot, id, slot, quantidade, hexUser[playerid][hex]);
             mysql_query(ConexaoSQL, Query);
-            ItemS[playerid][i] = id;
-            QS[playerid][i] = quantidade;
+            id = 0;
+            i = 0;
             break;
         }
     }
@@ -147,10 +150,10 @@ stock AddItem(playerid, id, quantidade) {
 }
 
 stock RemoveItem(playerid, slot, quantidade) {
-    new Query[259];
+    new Query[128];
     if(slot == 0) {
         if(GetPVarInt(playerid, "removeSlot") > 0) {
-            if(QS[playerid][slot] => 1) {
+            if(QS[playerid][slot] >= 1) {
                 mysql_format(ConexaoSQL, Query, sizeof(Query), "UPDATE `inventory_sessions` SET \
                 `peso%i`='%i' \
                 WHERE `hex`='%i'", GetPVarInt(playerid, "removeSlot"), quantidade, hexUser[playerid][hex]);
@@ -187,20 +190,33 @@ stock ItemVerify(playerid, id, quant) {
 }
 
 stock DropItem(playerid, slot, quantidade){
+
+    new g_UniqueItemID = 1;
+
     if (ItemS[playerid][slot] != 0) {
         
         new Float:x, Float:y, Float:z;
         GetPlayerPos(playerid, x, y, z);
         x += 1.0;
 
-        new objectid = CreateObject(1247, x, y, z, 0.0, 0.0, 0.0);
-
         new itemIndex = -1;
+        new string[128];
+
         for (new i = 0; i < sizeof(DroppedItems); i++) {
             if (DroppedItems[i][0] == 0) {
+
+                DroppedItems[i][0] = g_UniqueItemID;
+                g_UniqueItemID++;
+
+                format(string, sizeof(string), "Item Dropado\n%d", ITEM_NameGET(ItemS[playerid][slot]));
+
+                DroppedItems[i][6] = CreateObject(1247, x, y, z, 0.0, 0.0, 0.0);
+                LabelDropped[i][0] = Create3DTextLabel(string, 0x008080FF, 30.0, 40.0, 50.0, 40.0, 0, 0);
                 DroppedItems[i][0] = ItemS[playerid][slot];
                 DroppedItems[i][3] = QS[playerid][slot];
-                GetPlayerPos(playerid, DroppedItems[i][1], DroppedItems[i][2], 0.0);
+                DroppedItems[i][4] = slot;
+
+                GetPlayerPos(playerid, PosDropped[i][0], PosDropped[i][1], PosDropped[i][2]);
                 itemIndex = i;
                 break;
             }
@@ -216,25 +232,30 @@ stock DropItem(playerid, slot, quantidade){
     return 1;
 }
 
-stock PickUpItem(playerid, itemIndex) {
-    if (DroppedItems[itemIndex][0] != 0) {
-        new playerX, playerY, playerZ;
-        GetPlayerPos(playerid, playerX, playerY, playerZ);
+stock PickUpItem(playerid) {
+    new Float:playerX, Float:playerY, Float:playerZ;
+    GetPlayerPos(playerid, playerX, playerY, playerZ);
 
-        new itemX = DroppedItems[itemIndex][1];
-        new itemY = DroppedItems[itemIndex][2];
+    for (new itemIndex = 0; itemIndex < MAX_ITEMS_ON_GROUND; itemIndex++) {
+        if (DroppedItems[itemIndex][0] != 0) {
+            new Float:itemX = PosDropped[itemIndex][0];
+            new Float:itemY = PosDropped[itemIndex][1];
 
-        new distance = Float:VectorDistance(playerX, playerY, playerZ, itemX, itemY, 0.0);
+            new Float:distance = Float:GetDistance(playerX, playerY, playerZ, itemX, itemY, 0.0);
 
-        if (distance <= 2.0) {
-            AddItem(playerid, DroppedItems[itemIndex][0],  DroppedItems[itemIndex][3]);
-            
-            DroppedItems[itemIndex][0] = 0;
-            DroppedItems[itemIndex][1] = 0.0;
-            DroppedItems[itemIndex][2] = 0.0;
-            DroppedItems[itemIndex][3] = 0;
+            if (distance <= 2.0) {
+                AddItem(playerid, DroppedItems[itemIndex][4], DroppedItems[itemIndex][0], DroppedItems[itemIndex][3]);
 
-            Notificar(playerid, "info", "INVENTORY", "Voce pegou um item do chao.", 5000);
+                Delete3DTextLabel(LabelDropped[itemIndex][0]);
+                DestroyObject(DroppedItems[itemIndex][5]);
+
+                DroppedItems[itemIndex][0] = 0;
+                PosDropped[itemIndex][0] = 0.0;
+                PosDropped[itemIndex][1] = 0.0;
+                DroppedItems[itemIndex][4] = 0;
+
+                Notificar(playerid, "info", "INVENTORY", "Você pegou um item do chão.", 5000);
+            }
         }
     }
 

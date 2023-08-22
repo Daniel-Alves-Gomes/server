@@ -206,3 +206,34 @@ stock ITEM_PesoGET(id) {
 
     return weight;
 }
+
+
+stock Float:Power(Float:base, exponent) {
+    new Float:result = 1.0;
+    for (new i = 0; i < exponent; i++) {
+        result *= base;
+    }
+    return result;
+}
+
+stock Float:fabs(Float:value) {
+    return (value >= 0.0) ? value : -value;
+}
+
+stock Float:NewtonSqrt(Float:value) {
+    if (value <= 0.0) return 0.0;
+
+    new Float:x0 = value;
+    new Float:x1 = (x0 + value / x0) / 2.0;
+
+    while (Float:fabs(x1 - x0) >= 0.0001) {
+        x0 = x1;
+        x1 = (x0 + value / x0) / 2.0;
+    }
+
+    return x1;
+}
+
+stock Float:GetDistance(Float:x1, Float:y1, Float:z1, Float:x2, Float:y2, Float:z2) {
+    return NewtonSqrt(Power(x2 - x1, 2) + Power(y2 - y1, 2) + Power(z2 - z1, 2));
+}

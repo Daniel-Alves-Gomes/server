@@ -496,3 +496,24 @@ CMD:inventory(playerid) {
     mysql_tquery(ConexaoSQL, Query, "Inventory_Open", "i", playerid);
     return 1;
 }
+
+CMD:dropar(playerid, params[]) {
+    new slot, qnt;
+    if(sscanf(params,"dd", slot, qnt)) {
+        Notificar(playerid, "info", "INVENTORY", "Especifique os parametros. [slot] [quant.]", 5000);
+        return 1;
+    }
+    if(slot > 0) {
+        if(qnt == 0) {
+            Notificar(playerid, "erro", "INVENTOYR", "Coloque mais de 0 na quantidade", 5000);
+        } else {
+            DropItem(playerid, slot, qnt);
+        }
+    }
+    return 1;
+}
+
+CMD:pegar(playerid) {
+    PickUpItem(playerid);
+    return 1;
+}
