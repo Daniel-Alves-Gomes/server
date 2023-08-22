@@ -6,8 +6,7 @@
 new ItemS[MAX_PLAYERS][40];
 new QS[MAX_PLAYERS][40];
 new DroppedItems[MAX_ITEMS_ON_GROUND][8];
-new Float:PosDropped[MAX_ITEMS_ON_GROUND][3];
-new Text3D:LabelDropped[MAX_ITEMS_ON_GROUND][1];
+new g_LastUniqueID = 1;
 
 forward Inventory_Load(playerid);
 
@@ -189,44 +188,40 @@ stock ItemVerify(playerid, id, quant) {
     return 0;
 }
 
-stock DropItem(playerid, slot, quantidade){
+stock FindEmptyItemSlot() {
+    for (new i = 0; i < MAX_ITEMS_ON_GROUND; i++) {
+        if (DroppedItems[i][0] == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
 
-    new g_UniqueItemID = 1;
-
+stock DropItem(playerid, slot, quantidade) {
     if (ItemS[playerid][slot] != 0) {
-        
         new Float:x, Float:y, Float:z;
         GetPlayerPos(playerid, x, y, z);
         x += 1.0;
 
-        new itemIndex = -1;
-        new string[128];
+        new itemIndex = FindEmptyItemSlot();
 
-        for (new i = 0; i < sizeof(DroppedItems); i++) {
-            if (DroppedItems[i][0] == 0) {
+        if (itemIndex != -1) {
+            DroppedItems[itemIndex][0] = g_LastUniqueID;
+            g_LastUniqueID++;
 
-                DroppedItems[i][0] = g_UniqueItemID;
-                g_UniqueItemID++;
+            DroppedItems[itemIndex][1] = ItemS[playerid][slot];
+            DroppedItems[itemIndex][2] = quantidade;
+            DroppedItems[itemIndex][3] = CreateObject(1247, x, y, z, 0.0, 0.0, 0.0, 40.0);
+            DroppedItems[itemIndex][4] = playerid;
+            DroppedItems[itemIndex][5] = slot;
 
-                format(string, sizeof(string), "Item Dropado\n%d", ITEM_NameGET(ItemS[playerid][slot]));
-
-                DroppedItems[i][6] = CreateObject(1247, x, y, z, 0.0, 0.0, 0.0);
-                LabelDropped[i][0] = Create3DTextLabel(string, 0x008080FF, 30.0, 40.0, 50.0, 40.0, 0, 0);
-                DroppedItems[i][0] = ItemS[playerid][slot];
-                DroppedItems[i][3] = QS[playerid][slot];
-                DroppedItems[i][4] = slot;
-
-                GetPlayerPos(playerid, PosDropped[i][0], PosDropped[i][1], PosDropped[i][2]);
-                itemIndex = i;
-                break;
-            }
-        }
-
-        if (itemIndex >= 0) {
+            Notificar(playerid, "info", "INVENTORY", "Você dropou um item no chão.", 5000);
             RemoveItem(playerid, slot, quantidade);
-            Notificar(playerid, "info", "INVENTORY", "Voce dropou um item do chao.", 5000);
+        } else {
+            Notificar(playerid, "info", "INVENTORY", "Não há espaço para dropar mais itens.", 5000);
         }
-
+    } else {
+        Notificar(playerid, "info", "INVENTORY", "Não há nenhum item neste slot.", 5000);
     }
 
     return 1;
@@ -236,25 +231,26 @@ stock PickUpItem(playerid) {
     new Float:playerX, Float:playerY, Float:playerZ;
     GetPlayerPos(playerid, playerX, playerY, playerZ);
 
-    for (new itemIndex = 0; itemIndex < MAX_ITEMS_ON_GROUND; itemIndex++) {
-        if (DroppedItems[itemIndex][0] != 0) {
-            new Float:itemX = PosDropped[itemIndex][0];
-            new Float:itemY = PosDropped[itemIndex][1];
+    for (new i = 0; i < MAX_ITEMS_ON_GROUND; i++) {
+        if (DroppedItems[i][0] != 0) {
+            new Float:itemX, Float:itemY, Float:itemZ;
+            GetObjectPos(DroppedItems[i][3], itemX, itemY, itemZ);
 
-            new Float:distance = Float:GetDistance(playerX, playerY, playerZ, itemX, itemY, 0.0);
+            new Float:distance = Float:GetDistance(playerX, playerY, playerZ, itemX, itemY, itemZ);
 
-            if (distance <= 2.0) {
-                AddItem(playerid, DroppedItems[itemIndex][4], DroppedItems[itemIndex][0], DroppedItems[itemIndex][3]);
+            if (distance <= 2.0 && DroppedItems[i][4] != playerid) {
+                AddItem(playerid, DroppedItems[i][5],DroppedItems[i][1], DroppedItems[i][2]);
 
-                Delete3DTextLabel(LabelDropped[itemIndex][0]);
-                DestroyObject(DroppedItems[itemIndex][5]);
+                DestroyObject(DroppedItems[i][3]);
 
-                DroppedItems[itemIndex][0] = 0;
-                PosDropped[itemIndex][0] = 0.0;
-                PosDropped[itemIndex][1] = 0.0;
-                DroppedItems[itemIndex][4] = 0;
+                DroppedItems[i][0] = 0;
+                DroppedItems[i][1] = 0;
+                DroppedItems[i][2] = 0;
+                DroppedItems[i][3] = 0;
+                DroppedItems[i][4] = 0;
 
                 Notificar(playerid, "info", "INVENTORY", "Você pegou um item do chão.", 5000);
+                break;
             }
         }
     }

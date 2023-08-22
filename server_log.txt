@@ -49073,3 +49073,148 @@ v0.3.7-R2, (C)2005-2015 SA-MP Team
 [21:41:40] 3 - 0
 [21:41:40] 3 - 1
 [21:45:54] [part] Daniel has left the server (0:1)
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[16:57:55] filterscripts = ""  (string)
+[16:57:55] 
+[16:57:55] Server Plugins
+[16:57:55] --------------
+[16:57:55]  Loading plugin: sscanf
+[16:57:55] 
+[16:57:55]  ===============================
+[16:57:55] 
+[16:57:55]       sscanf plugin loaded.     
+[16:57:55] 
+[16:57:55]          Version: 2.13.8
+[16:57:55] 
+[16:57:55]    (c) 2022 Alex "Y_Less" Cole  
+[16:57:55] 
+[16:57:55]  ===============================
+[16:57:55] 
+[16:57:55]   Loaded.
+[16:57:55]  Loading plugin: mysql
+[16:57:55]  >> plugin.mysql: R41-4 successfully loaded.
+[16:57:55]   Loaded.
+[16:57:55]  Loading plugin: pawncmd
+[16:57:55] [Pawn.CMD] plugin v3.3.6 loading...
+[16:57:55] [Pawn.CMD] 
+
+    | Pawn.CMD 3.3.6 | 2016 - 2021
+    |--------------------------------
+    | Author and maintainer: katursis
+
+
+    | Compiled: Sep 26 2021 at 11:55:10
+    |--------------------------------------------------------------
+    | Repository: https://github.com/katursis/Pawn.CMD
+
+[16:57:55]   Loaded.
+[16:57:55]  Loading plugin: fmt
+[16:57:55]  * fmt plugin loaded
+[16:57:55]  * v2.3 (c) vsergeenko
+[16:57:55]   Loaded.
+[16:57:55]  Loading plugin: cef
+[16:57:55]   Loaded.
+[16:57:55]  Loading plugin: streamer
+[16:57:56] 
+
+*** Streamer Plugin v2.9.5 by Incognito loaded ***
+
+[16:57:56]   Loaded.
+[16:57:56]  Loading plugin: nativechecker
+[16:57:56]   Loaded.
+[16:57:56]  Loaded 7 plugins.
+
+[16:57:56] 
+[16:57:56] Filterscripts
+[16:57:56] ---------------
+[16:57:56]   Loaded 0 filterscripts.
+
+[16:57:56]  
+[16:57:56]  
+[16:57:56]          ==============================================================
+[16:57:56]          |                                                            |
+[16:57:56]          |                                                            |
+[16:57:56]          |    YYYYYYY       YYYYYYY    SSSSSSSSSSSSSSS  IIIIIIIIII    |
+[16:57:56]          |    Y:::::Y       Y:::::Y  SS:::::::::::::::S I::::::::I    |
+[16:57:56]          |    Y:::::Y       Y:::::Y S:::::SSSSSS::::::S I::::::::I    |
+[16:57:56]          |    Y::::::Y     Y::::::Y S:::::S     SSSSSSS II::::::II    |
+[16:57:56]          |    YYY:::::Y   Y:::::YYY S:::::S               I::::I      |
+[16:57:56]          |       Y:::::Y Y:::::Y    S:::::S               I::::I      |
+[16:57:56]          |        Y:::::Y:::::Y      S::::SSSS            I::::I      |
+[16:57:56]          |         Y:::::::::Y        SS::::::SSSSS       I::::I      |
+[16:57:56]          |          Y:::::::Y           SSS::::::::SS     I::::I      |
+[16:57:56]          |           Y:::::Y               SSSSSS::::S    I::::I      |
+[16:57:56]          |           Y:::::Y                    S:::::S   I::::I      |
+[16:57:56]          |           Y:::::Y                    S:::::S   I::::I      |
+[16:57:56]          |           Y:::::Y        SSSSSSS     S:::::S II::::::II    |
+[16:57:56]          |        YYYY:::::YYYY     S::::::SSSSSS:::::S I::::::::I    |
+[16:57:56]          |        Y:::::::::::Y     S:::::::::::::::SS  I::::::::I    |
+[16:57:56]          |        YYYYYYYYYYYYY      SSSSSSSSSSSSSSS    IIIIIIIIII    |
+[16:57:56]          |                                                            |
+[16:57:56]          |                                                            |
+[16:57:56]          |                      (c) 2021 MPL v1.1                     |
+[16:57:56]          |            Alex "Y_Less" Cole and contributors.            |
+[16:57:56]          |                                                            |
+[16:57:56]          |                                                            |
+[16:57:56]          ==============================================================
+[16:57:56]  
+[16:57:56]  
+[16:57:56]  ========================================== 
+[16:57:56]  |                                        | 
+[16:57:56]  |  Missing YSI scriptfiles directories:  | 
+[16:57:56]  |                                        | 
+[16:57:56]  |      /scriptfiles/YSI/fixes/           | 
+[16:57:56]  |      /scriptfiles/YSI/temp/            | 
+[16:57:56]  |                                        | 
+[16:57:56]  ========================================== 
+[16:57:56]  |                                        | 
+[16:57:56]  |   Generating code, this may take a     | 
+[16:57:56]  |  little bit of time.  Note that this   | 
+[16:57:56]  |  code generation works best with the   | 
+[16:57:56]  |     JIT plugin, which you are not      | 
+[16:57:56]  |     currently using.  Get it here:     | 
+[16:57:56]  |                                        | 
+[16:57:56]  |       https://git.io/jit-plugin        | 
+[16:57:56]  |                                        | 
+[16:57:56]  |             Please wait...             | 
+[16:57:56]  |                                        | 
+[16:57:56]  |                 Done!                  | 
+[16:57:56]  |                                        | 
+[16:57:56]  ========================================== 
+[16:57:56]  |                                        | 
+[16:57:56]  | Server:      0.3.7 - Windows           | 
+[16:57:56]  | Compiler:    3.10.10 - Windows         | 
+[16:57:56]  | Codepage:    <none>                    | 
+[16:57:56]  | YSI:         5.06.1932                 | 
+[16:57:56]  | Started:     1692734276                | 
+[16:57:56]  | JIT:         <none>                    | 
+[16:57:56]  | Crashdetect: <none>                    | 
+[16:57:56]  |                                        | 
+[16:57:56]  ========================================== 
+[16:57:56]  |                                        | 
+[16:57:56]  | Unable to check the latest YSI version | 
+[16:57:56]  | - please watch the forums and github:  | 
+[16:57:56]  |                                        | 
+[16:57:56]  |          https://git.io/5.x            | 
+[16:57:56]  |                                        | 
+[16:57:56]  ========================================== 
+[16:57:56]  
+[16:57:56]   Filterscript '../scriptfiles/callbackfix.amx' loaded.
+[16:57:56]  
+[16:57:56] [Ambar]: A conexão com a database ['ambarsamp'] foi concluida!
+[16:57:56] Number of vehicle models: 0
+[16:58:20] [connection] 127.0.0.1:53959 requests connection cookie.
+[16:58:21] [connection] incoming connection: 127.0.0.1:53959 id: 0
+[16:58:21] [join] Daniel has joined the server (0:127.0.0.1)
+[16:58:21] 2
+[16:58:21] 3 - 0
+[16:58:21] 3 - 1
+[17:00:29] [part] Daniel has left the server (0:1)
