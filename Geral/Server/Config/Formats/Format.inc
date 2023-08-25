@@ -14,6 +14,20 @@ stock SQL_Errno(Error) {
     return errno;
 }
 
+stock eNumero(const input[])
+{
+    new i = 0;
+    while (input[i])
+    {
+        if (!('0' <= input[i] && input[i] <= '9'))
+        {
+            return false;
+        }
+        i++;
+    }
+    return true;
+}
+
 stock GetPlayerNameEx(playerid)
 {
     static pname[MAX_PLAYER_NAME];

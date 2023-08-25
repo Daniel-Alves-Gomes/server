@@ -27,8 +27,8 @@ new PlayerInventario[MAX_PLAYERS][33][iInv];
 new DropItemSlot[MAX_OBJECTS][iInv];
 new PlayerText:DrawInv[MAX_PLAYERS][40];
 new InventarioAberto[MAX_PLAYERS];
-new BigEar[MAX_PLAYERS];
- 
+new QuantidadeSelector[MAX_PLAYERS][100];
+
 static stock PlayerName(playerid)
 {
 	new Name[MAX_PLAYER_NAME];
@@ -49,8 +49,13 @@ hook OnPlayerDisconnect(playerid, reason)
 	SalvarInventario(playerid);
 	return 1;
 }
- 
-hook OnPlayerClickPlayerTD(playerid, PlayerText: playertextid)
+
+stock QuantidadeSelect(playerid) {
+	ShowPlayerDialog(playerid, 1912, DIALOG_STYLE_INPUT, "QUANTIDADE SELETOR", "1 para cima", "Confirmar", "Sair");
+	return 1;
+}
+
+hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 {
 	new str[64], text[64];
 	for(new i = 1; i < 33; ++i)
@@ -70,13 +75,16 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText: playertextid)
 			PlayerTextDrawSetString(playerid, DrawInv[playerid][38], text);
 			PlayerTextDrawShow(playerid, DrawInv[playerid][38]);
 			SetPVarInt(playerid, #VarSlotInv, i);
-			return 1;
 		}
 	}
+	if(playertextid == DrawInv[playerid][39])
+    {
+        QuantidadeSelect(playerid);
+    }
 	if(playertextid == DrawInv[playerid][36]) return FuncaoItens(playerid, GetPVarInt(playerid, #VarSlotInv));
 	if(playertextid == DrawInv[playerid][35]) return callcmd::inventario(playerid);
 	if(playertextid == DrawInv[playerid][37]) return DroparItem(playerid, GetPVarInt(playerid, #VarSlotInv));
-	return 0;
+	return 1;
 }
  
 hook OnPlayerClickTextDraw(playerid, Text:clickedid)
@@ -185,7 +193,24 @@ CMD:daritem(playerid, const params[])
 	}
 	return 1;
 }
- 
+
+hook OnDialogResponse(playerid, dialogid, response, listitem, const inputtext[100]) {
+	if(dialogid == 1912) {
+		if(response) {
+			if(eNumero(inputtext)) {
+				new str[128];
+				format(str, sizeof(str), "%i", inputtext);
+				PlayerTextDrawSetString(playerid, DrawInv[playerid][39], str);
+				QuantidadeSelector[playerid] = inputtext;
+				return 1;
+			} else {
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
 GanharItem(playerid, itemid, quantia)
 {
 	for(new i = 1; i < 33; ++i)
@@ -296,35 +321,6 @@ K2::SalvarInventario(playerid)
     return 1;
 }
 
- 
-SendClientMessageInRange(Float:_r, playerid, const _s[],c1,c2,c3,c4,c5)
-{
-    new Float:_x, Float:_y, Float:_z;
-    GetPlayerPos(playerid, _x, _y, _z);
-    foreach(new i : Player)
-    {
-        if(!BigEar[i])
-        {
-            if(GetPlayerVirtualWorld(i) != GetPlayerVirtualWorld(playerid) && GetPlayerInterior(i) != GetPlayerInterior(playerid))continue;
-            if(GetPlayerDistanceFromPoint(i,_x,_y,_z) < _r/16)
-                SendClientMessage(i, c1, _s);
-            else if(GetPlayerDistanceFromPoint(i,_x,_y,_z) < _r/8)
-                SendClientMessage(i, c2, _s);
-            else if(GetPlayerDistanceFromPoint(i,_x,_y,_z) < _r/4)
-                SendClientMessage(i, c3, _s);
-            else if(GetPlayerDistanceFromPoint(i,_x,_y,_z) < _r/2)
-                SendClientMessage(i, c4, _s);
-            else if(GetPlayerDistanceFromPoint(i,_x,_y,_z) < _r)
-                SendClientMessage(i, c5, _s);
-        }
-        else
-        {
-            SendClientMessage(i, c1, _s);
-        }
-    }
-    return true;
-}
- 
 CheckInventario(playerid, itemid)
 {
 	for(new i = 1; i < 33; ++i)
@@ -342,6 +338,7 @@ ItemNomeInv(itemid) // AQUI VOCÊ PODE ADICIONAR OS ID DOS ITENS E SETAR SEU NOM
 	else
 	switch(itemid)
 	{
+		case 322: name = "Muni.";
 		case 11746: name = "Chave";
 		case 3044: name = "Baseado";//Editavel
 		case 19039: name = "Relogio de Ouro";
@@ -508,7 +505,6 @@ ItemNomeInv(itemid) // AQUI VOCÊ PODE ADICIONAR OS ID DOS ITENS E SETAR SEU NOM
 		case 339: name = "Katana";
 		case 341: name = "Motoserra";
 		case 321: name = "Dildo Roxo";
-		case 322: name = "Dildo";
 		case 323: name = "Vibrador";
 		case 324: name = "Vibrador de Prata";
 		case 325: name = "Flores";
@@ -560,8 +556,6 @@ static  NomeArmas(armaid)
         case 7: name = "Taco de Sinuca";
         case 8: name = "Katana";
         case 9: name = "Motoserra";
-        case 10: name = "Dildo Roxo";
-        case 11: name = "Dildo";
         case 12: name = "Vibrador";
         case 13: name = "Vibrador de Prata";
         case 14: name = "Flores";
@@ -663,7 +657,7 @@ AtualizarInventario(playerid, i)
  
 FuncaoItens(playerid, modelid)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕES DE CADA ITEM. SEGUE AS FUNÇÕES PRONTAS ABAIXO
 {
-	new str[128], Float:life;
+	new Float:life;
 	switch(PlayerInventario[playerid][modelid][Slot])
 	{
 		case 331..371://
@@ -814,7 +808,19 @@ FuncaoItens(playerid, modelid)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕES DE CADA I
         	//SendClientMessage(playerid, COLOR_LIGHTGREEN, str);
         	AtualizarInventario(playerid, modelid);
         	return 1;
-        }
+		}
+		case 322:
+		{
+			new weapon = GetPlayerWeapon(playerid);
+			if(weapon != 0) {
+				GivePlayerWeapon(playerid, weapon, PlayerInventario[playerid][modelid][Unidades]);
+				PlayerInventario[playerid][modelid][Unidades] = 0;
+				AtualizarInventario(playerid, modelid);
+			} else {
+				Notificar(playerid, "erro", "INVENTARIO", "Voce nao possui uma arma em sua mao para poder usar as municoes.", 5000);
+			}
+			return 1;
+		}
 	}
 	return 0;
 }
@@ -875,7 +881,7 @@ IsValidItemInv(itemid) //AQUI VOCÊ DEVE DEFINIR OS ID'S DOS ITENS PARA SER VALI
 	if(GetArmaInv(itemid)) return 1;
 	switch(itemid)
 	{
-		case 19823, 19820, 11722, 11723, 19570, 19824, 1486, 19822, 1668, 2958, 19625, 11746,
+		case 322, 19823, 19820, 11722, 11723, 19570, 19824, 1486, 19822, 1668, 2958, 19625, 11746,
 		3044, 19039, 19040, 19042, 19044, 19045, 19046, 19047, 11747, 18865, 18866, 18867,
 		18868, 18869, 18870, 18871, 18872, 18873, 18874, 19513, 18875, 19874, 19138, 19139,
 		19140, 19022, 19023, 19024, 19025, 19026, 19027, 19028, 19029, 19030, 19031, 19032,
@@ -1408,7 +1414,7 @@ K2::TextDrawInv(playerid)
 	PlayerTextDrawFont(playerid, DrawInv[playerid][38], 1);
 	PlayerTextDrawSetProportional(playerid, DrawInv[playerid][38], 1);
  
-	DrawInv[playerid][39] = CreatePlayerTextDraw(playerid, 464.601501, 296.016723, "Separar");
+	DrawInv[playerid][39] = CreatePlayerTextDraw(playerid, 464.601501, 296.016723, "Quantidade");
 	PlayerTextDrawLetterSize(playerid, DrawInv[playerid][39], 0.200000, 1.000000);
 	PlayerTextDrawTextSize(playerid, DrawInv[playerid][39], 502.000000, 10.000000);
 	PlayerTextDrawAlignment(playerid, DrawInv[playerid][39], 1);
