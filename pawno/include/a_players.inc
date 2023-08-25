@@ -134,7 +134,7 @@ native IsPlayerAttachedObjectSlotUsed(playerid, index);
 native EditAttachedObject(playerid, index);
 
 // Per-player TextDraws
-native PlayerText:CreatePlayerTextDraw(playerid, Float:x, Float:y, text[]);
+native PlayerText:CreatePlayerTextDraw(playerid, Float:x, Float:y, const  text[]);
 native PlayerTextDrawDestroy(playerid, PlayerText:text);
 native PlayerTextDrawLetterSize(playerid, PlayerText:text, Float:x, Float:y);
 native PlayerTextDrawTextSize(playerid, PlayerText:text, Float:x, Float:y);

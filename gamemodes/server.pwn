@@ -1,26 +1,27 @@
 #include <a_samp>
 #include <a_mysql>
+#include <playerverification>
 #include <fmt>
 #include <Pawn.CMD>
 #include <cef>
+#include <foreach>
 #include <sscanf2>
 #include <streamer>
 #include <fuelvehicle>
 #include <playervehicle>
-#include <playerverification>
 #include <YSI-Includes\YSI_Coding\y_hooks>
 #include "../Geral/Server/Database_Central.inc"
 #include "../Geral/Server/Config/Formats/Format.inc"
 #include "../Geral/Base/Groups/Group.inc"
 #include "../Geral/Base/Notify/Notify.inc"
 #include "../Geral/Base/Empregos/Empregos.inc"
+#include "../Geral/Base/Vehicles/Stats/Create.inc"
 #include "../Geral/Base/Vehicles/Vehicle.inc"
 #include "../Geral/Base/Vehicles/Fuel/Fuel.inc"
 #include "../Geral/Base/Vehicles/Stats/Engine.inc"
 #include "../Geral/Base/Vehicles/Stats/Cinto.inc"
 #include "../Geral/Base/Vehicles/Stats/Garage.inc"
 #include "../Geral/Base/Inventory/InventoryClass.inc"
-#include "../Geral/Base/Inventory/Hooks/ItemHooks.inc"
 #include "../Geral/Base/Organizacoes/Organizacao.inc"
 #include "../Geral/Base/Organizacoes/Gangues/Workbench/Bancada.inc"
 
@@ -35,6 +36,8 @@ enum Player_Data
 new pInfo[MAX_PLAYERS][Player_Data];
 new TimerHUD[MAX_PLAYERS];
 new TimerFomeSede[MAX_PLAYERS];
+
+forward InfoUser(playerid);
 
 main()
 {
@@ -722,7 +725,20 @@ public OnCefInitialize(player_id, success)
 
 public OnPlayerConnect(playerid)
 {
+	new Query[128];
+    mysql_format(ConexaoSQL, Query, sizeof(Query), "SELECT * FROM `server_accounts` WHERE `nome`='%e'", GetPlayerNameEx(playerid));
+    mysql_tquery(ConexaoSQL, Query, "InfoUser", "i", playerid);
 	return 1;
+}
+
+public InfoUser(playerid) {
+    if(cache_num_rows() > 0) {
+        cache_get_value_name_int(0, "hex", hexUser[playerid][hex]);
+		printf("%d", hexUser[playerid][hex]);
+    } else {
+        Kick(playerid);
+    }
+    return 1;
 }
 
 public OnPlayerDisconnect(playerid, reason)
