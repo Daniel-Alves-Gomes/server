@@ -352,7 +352,7 @@ ItemNomeInv(itemid) // AQUI VOCÊ PODE ADICIONAR OS ID DOS ITENS E SETAR SEU NOM
 		case 19046: name = "Relogio Verde";
 		case 19047: name = "Relogio Roxo";
 		case 11747: name = "Baseado";
-		case 18865: name = "Celular Laranja";
+		case 18865: name = "Celular";
 		case 18866: name = "Celular Azul";
 		case 18867: name = "Celular Laranja";
 		case 18868: name = "Celular Preto";
@@ -430,7 +430,7 @@ ItemNomeInv(itemid) // AQUI VOCÊ PODE ADICIONAR OS ID DOS ITENS E SETAR SEU NOM
 		case 1314: name = "2 Players";
 		case 19578: name = "Banana";
 		case 18636: name = "Bone COP";
-		case 19942: name = "Radio Policial";
+		case 19942: name = "Radio";
 		case 19141: name = "Capacete S.W.A.T";
 		case 19558: name = "Bone Pizzaiolo";
 		case 19801: name = "Mascara de Assalto";
