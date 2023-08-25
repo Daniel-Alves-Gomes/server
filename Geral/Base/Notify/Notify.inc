@@ -17,7 +17,7 @@ hook OnPlayerSpawn(playerid)
     return 1;
 }
 
-Notificar(playerid, const type[100], const title[100], const message[150], time)
+Notificar(playerid, const type[100], const title[100], const message[350], time)
 {
     cef_emit_event(playerid, "send:action:notificar", CEFSTR(type), CEFSTR(title), CEFSTR(message), CEFINT(time));
 }

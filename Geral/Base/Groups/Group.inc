@@ -79,7 +79,7 @@ public GET_PlayerStats(playerid) {
 }
 
 public SET_PunishKick(player_id, const id_client[]) {
-    new fSend[150];
+    new fSend[350];
     new hexId;
     sscanf(id_client, "d", hexId);
     if(IsPlayerConnected(hexId)) {
@@ -106,7 +106,7 @@ public SET_PunishBan(player_id, const arguments[]) {
 }
 
 public V_Ban(playerid) {
-    new fSend[150];
+    new fSend[350];
     new Query[350];
     if(cache_num_rows() > 0) {
         mysql_format(ConexaoSQL, Query, sizeof(Query), "INSERT INTO `punish_list` (`admin`, `hex`, `motivo`, `tempo`) VALUES ('%s', '%d', '%s', '%d')", GetPlayerNameEx(playerid), GetPVarInt(playerid, "hexPunish"), pGet[playerid][mtvBan], GetPVarInt(playerid, "tempoBan"));

@@ -92,10 +92,10 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 	}
 	return 0;
 }
- 
+
 CMD:pegaritem (playerid)
 {
-    new Float:x, Float:y, Float:z, str[128];
+    new Float:x, Float:y, Float:z;
     for(new i = 0; i < sizeof(DropItemSlot); i++)
     {
         GetDynamicObjectPos(DropItemSlot[i][DropItem], x,y,z);
@@ -105,7 +105,6 @@ CMD:pegaritem (playerid)
             {
                 if(!CheckInventario(playerid, DropItemSlot[i][DropItemID])) return SendClientMessage(playerid, -1, "Sua Mochila está cheia.");
                 GanharItem(playerid, DropItemSlot[i][DropItemID], DropItemSlot[i][DropItemUni]);
-                format(str, 64, "Você pegou %s do chão com %s unidades.", ItemNomeInv(DropItemSlot[i][DropItemID]), ConvertMoney(DropItemSlot[i][DropItemUni]));
 				DestroyDynamicObject(DropItemSlot[i][DropItem]);
 				DestroyDynamic3DTextLabel(DropItemSlot[i][LabelItem]);
 				DropItemSlot[i][DropItem] = 0;
@@ -113,7 +112,6 @@ CMD:pegaritem (playerid)
 				DropItemSlot[i][DropItemUni] = 0;
 				DropItemSlot[i][Interior] = 0;
 				DropItemSlot[i][Virtual] = 0;
-				SendClientMessage(playerid, 0xB384FFAA, str);
 				new animlib[24], animname[24];
 				format(animlib, sizeof(animlib), "BOMBER");
 				format(animname, sizeof(animname), "BOM_Plant");
@@ -137,8 +135,6 @@ CMD:inventario(playerid)
 		}
 		InventarioAberto[playerid] = 0;
 		CancelSelectTextDraw(playerid);
-		format(str, 64, "*%s fechou seu inventario.", PlayerName(playerid));
-        SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
 		return 1;
 	}
 	else
@@ -166,8 +162,6 @@ CMD:inventario(playerid)
 		}
 		SelectTextDraw(playerid, 0xC4C4C4AA);
 		InventarioAberto[playerid] = 1;
-		format(str, 64, "*%s abriu seu inventario.", PlayerName(playerid));
-        SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
 	}
 	return 1;
 }
@@ -175,6 +169,7 @@ CMD:inventario(playerid)
 CMD:daritem(playerid, const params[])
 {
 	new id, item, quantia;
+	new strNotf[350];
 	if(V_User(playerid, "Staff"))
 	{
 		if(sscanf(params, "iii", id, item, quantia)) return SendClientMessage(playerid, COLOR_GRAD2, "Use: /daritem [ID] [ITEM ID] [UNIDADES].");
@@ -183,12 +178,10 @@ CMD:daritem(playerid, const params[])
 		if(quantia < 1) return SendClientMessage(playerid, COLOR_GRAD1, "A quantia deve ser no mínimo 1.");
 		if(!CheckInventario(id, item)) return SendClientMessage(playerid, COLOR_GRAD1, "O inventario desse jogador está cheio.");
 		GanharItem(id, item, quantia);
-		new str[256];
-		format(str, sizeof(str), "[Items]: {%06x}%s setou o item %s com %s unidades no inventario de %s.", COLOR_AVISO>>>8, PlayerName(playerid),
-		ItemNomeInv(item), ConvertMoney(quantia), PlayerName(id));
-		SendClientMessageToAll(0xEA6AACAA, str);
+		format(strNotf, sizeof(strNotf), "Você deu %d unidades de %s para %s", quantia, ItemNomeInv(item), PlayerName(id));
+		Notificar(playerid, "sucesso", "HEY!", strNotf, 5000);
 	} else {
-		SendClientMessage(playerid, COLOR_GRAD2, "Você não é admin.");
+		Notificar(playerid, "erro", "ERRO! ERRO!", "Voce nao e administrador", 5000);
 	}
 	return 1;
 }
@@ -212,7 +205,6 @@ GanharItem(playerid, itemid, quantia)
 			return 1;
 		}
 	}
-	SendClientMessage(playerid, -1, "Seu inventario está cheio.");
 	return 1;
 }
  
@@ -274,7 +266,6 @@ K2::LoadPlayerInventoryCallback(playerid)
 			format(str2, sizeof(str2), "slot%d_unidade", i); 
 			cache_get_value_name_int(0, str1, PlayerInventario[playerid][i][Slot]);
 			cache_get_value_name_int(0, str2, PlayerInventario[playerid][i][Unidades]);
-			printf("%d, %d", PlayerInventario[playerid][i][Slot], PlayerInventario[playerid][i][Unidades]);
 		}
         
         SendClientMessage(playerid, -1, "Seu inventário foi carregado do banco de dados.");
@@ -627,9 +618,9 @@ DroparItem(playerid, modelid)
 	                DropItemSlot[i][Interior] = GetPlayerInterior(playerid);
 	                format(str, sizeof(str), "Item: %s\nUnidades: %s", ItemNomeInv(PlayerInventario[playerid][modelid][Slot]), ConvertMoney(PlayerInventario[playerid][modelid][Unidades]));
 	                DropItemSlot[i][LabelItem] = CreateDynamic3DTextLabel(str, COLOR_GRAD5, x,y,z-1, 5, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
-	                format(str, 100, "*%s largou o item %s com %s unidades no chão.", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]), ConvertMoney(PlayerInventario[playerid][modelid][Unidades]));
-	                SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
-	                format(str, 128, "%s dropou o item %s no chão com %s Unidades.", PlayerName(playerid), ItemNomeInv(DropItemSlot[i][DropItemID]), ConvertMoney(DropItemSlot[i][DropItemUni]));
+	                //format(str, 100, "*%s largou o item %s com %s unidades no chão.", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]), ConvertMoney(PlayerInventario[playerid][modelid][Unidades]));
+	                //SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
+	                //format(str, 128, "%s dropou o item %s no chão com %s Unidades.", PlayerName(playerid), ItemNomeInv(DropItemSlot[i][DropItemID]), ConvertMoney(DropItemSlot[i][DropItemUni]));
 	                PlayerInventario[playerid][modelid][Unidades] = 0;
 	                AtualizarInventario(playerid, modelid);
 	                new animlib[24], animname[24];
@@ -678,8 +669,8 @@ FuncaoItens(playerid, modelid)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕES DE CADA I
 		case 331..371://
         {
             GivePlayerWeapon(playerid, GetArmaInv(PlayerInventario[playerid][modelid][Slot]), PlayerInventario[playerid][modelid][Unidades]);
-            format(str, sizeof(str), "*%s retirou uma %s de sua mochila.", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
-            SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
+           // format(str, sizeof(str), "*%s retirou uma %s de sua mochila.", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
+           // SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
             PlayerInventario[playerid][modelid][Unidades] = 0;
             AtualizarInventario(playerid, modelid);
             return 1;
@@ -691,12 +682,12 @@ FuncaoItens(playerid, modelid)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕES DE CADA I
         	SetPlayerHealth(playerid, life+1);
         	GetPlayerHealth(playerid, life);
         	if(life > 100){SetPlayerHealth(playerid, 100);}
-        	format(str, 128, "*%s bebeu uma garrava de %s", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
+        	//format(str, 128, "*%s bebeu uma garrava de %s", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
 			new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "VENDING");
 			format(animname, sizeof(animname), "VEND_Drink_P");
 			ApplyAnimation(playerid, animlib, animname, 4.1, 0, 0, 0, 0, 0, 1);
-            SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
+           // SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
             AtualizarInventario(playerid, modelid);
             SetPlayerSpecialAction(playerid, SPECIAL_ACTION_DRINK_BEER);
             SetPlayerSpecialAction(playerid, SPECIAL_ACTION_DRINK_WINE);
@@ -709,11 +700,11 @@ FuncaoItens(playerid, modelid)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕES DE CADA I
         	SetPlayerHealth(playerid, life+3);
         	GetPlayerHealth(playerid, life);
         	if(life > 100){SetPlayerHealth(playerid, 100);}
-        	format(str, 128, "*%s comeu sache de %s", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
+        	//format(str, 128, "*%s comeu sache de %s", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
 			new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "FOOD");
 			format(animname, sizeof(animname), "EAT_Burger");
-            SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
+           // SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
             AtualizarInventario(playerid, modelid);
             return 1;
         }
@@ -724,11 +715,11 @@ FuncaoItens(playerid, modelid)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕES DE CADA I
         	GetPlayerHealth(playerid, life);
         	if(life > 100){SetPlayerHealth(playerid, 100);}
         	PlayerInventario[playerid][modelid][Unidades]--;
-        	format(str, 128, "*%s bebeu uma garrava de %s", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
+        	//format(str, 128, "*%s bebeu uma garrava de %s", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
         	new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "VENDING");
 			format(animname, sizeof(animname), "VEND_Drink_P");
-            SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
+            //SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
             AtualizarInventario(playerid, modelid);
             return 1;
         }
@@ -739,8 +730,8 @@ FuncaoItens(playerid, modelid)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕES DE CADA I
 			new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "SMOKING");
 			format(animname, sizeof(animname), "M_smk_drag");
-        	format(str, 128, "*%s fumou um %s", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
-        	SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
+        	//format(str, 128, "*%s fumou um %s", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
+        	//SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
             AtualizarInventario(playerid, modelid);
             return 1;
         }
@@ -751,11 +742,11 @@ FuncaoItens(playerid, modelid)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕES DE CADA I
         	SetPlayerHealth(playerid, life+3);
         	GetPlayerHealth(playerid, life);
         	if(life > 100){SetPlayerHealth(playerid, 100);}
-        	format(str, 128, "*%s comeu uma %s", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
+        	//format(str, 128, "*%s comeu uma %s", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
         	new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "FOOD");
 			format(animname, sizeof(animname), "EAT_Burger");
-            SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
+           // SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
             AtualizarInventario(playerid, modelid);
             return 1;
         }
@@ -766,11 +757,11 @@ FuncaoItens(playerid, modelid)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕES DE CADA I
         	SetPlayerHealth(playerid, life+35);
         	GetPlayerHealth(playerid, life);
         	if(life > 100){SetPlayerHealth(playerid, 100);}
-        	format(str, 128, "*%s comeu um %s", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
+        	//format(str, 128, "*%s comeu um %s", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
         	new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "FOOD");
 			format(animname, sizeof(animname), "EAT_Burger");
-            SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
+           // SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
             AtualizarInventario(playerid, modelid);
             return 1;
         }
@@ -781,11 +772,11 @@ FuncaoItens(playerid, modelid)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕES DE CADA I
         	SetPlayerHealth(playerid, life+35);
         	GetPlayerHealth(playerid, life);
         	if(life > 100){SetPlayerHealth(playerid, 100);}
-        	format(str, 128, "*%s comeu uma %s", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
+        	//format(str, 128, "*%s comeu uma %s", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
         	new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "FOOD");
 			format(animname, sizeof(animname), "EAT_Burger");
-            SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
+           // SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
             AtualizarInventario(playerid, modelid);
             return 1;
         }
@@ -796,9 +787,9 @@ FuncaoItens(playerid, modelid)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕES DE CADA I
         	GetPlayerHealth(playerid, life);
         	if(life > 100){SetPlayerHealth(playerid, 100);}
         	PlayerInventario[playerid][modelid][Unidades]--;
-        	format(str, 128, "*%s usou um frasco de %s", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
-            SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
-            SendClientMessage(playerid, -1, "+10 de vida.");
+        	//format(str, 128, "*%s usou um frasco de %s", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
+            //SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
+            //SendClientMessage(playerid, -1, "+10 de vida.");
             AtualizarInventario(playerid, modelid);
             return 1;
         }
@@ -809,18 +800,18 @@ FuncaoItens(playerid, modelid)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕES DE CADA I
         	GetPlayerHealth(playerid, life);
         	if(life > 100){SetPlayerHealth(playerid, 100);}
         	PlayerInventario[playerid][modelid][Unidades]--;
-        	format(str, 128, "*%s usou um frasco de %s", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
-            SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
-            SendClientMessage(playerid, -1, "+50 de vida.");
+        	//format(str, 128, "*%s usou um frasco de %s", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
+            //SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
+            //SendClientMessage(playerid, -1, "+50 de vida.");
             AtualizarInventario(playerid, modelid);
             return 1;
         }
         case 1212:
         {
         	GivePlayerMoney(playerid, PlayerInventario[playerid][modelid][Unidades]);
-        	format(str, sizeof(str), "Você retirou R$ %s de sua mochila.", ConvertMoney(PlayerInventario[playerid][modelid][Unidades]));
+        	//format(str, sizeof(str), "Você retirou R$ %s de sua mochila.", ConvertMoney(PlayerInventario[playerid][modelid][Unidades]));
         	PlayerInventario[playerid][modelid][Unidades] = 0;
-        	SendClientMessage(playerid, COLOR_LIGHTGREEN, str);
+        	//SendClientMessage(playerid, COLOR_LIGHTGREEN, str);
         	AtualizarInventario(playerid, modelid);
         	return 1;
         }
