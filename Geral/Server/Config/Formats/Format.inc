@@ -14,6 +14,25 @@ stock SQL_Errno(Error) {
     return errno;
 }
 
+stock RemovePlayerWeapon(playerid, weaponid)
+{
+        new pWeaponData[13][2];
+        for (new i = 0; i < 13; i++)
+        {
+            GetPlayerWeaponData(playerid, i, pWeaponData[i][0], pWeaponData[i][1]);
+        }
+
+        ResetPlayerWeapons(playerid);
+        for(new i=0; i<13; i++)
+        {
+                if(pWeaponData[i][0] != 0 && pWeaponData[i][0] != weaponid)
+                {
+                        GivePlayerWeapon(playerid, pWeaponData[i][0], pWeaponData[i][1]);
+                }
+        }
+        return 0;
+}
+
 stock eNumero(const input[])
 {
     new i = 0;

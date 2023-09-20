@@ -8,12 +8,12 @@ CMD:car(playerid, params[])
     GetPlayerPos(playerid, x, y, z);
     if(V_User(playerid, "Staff") == 1) {
         if(sscanf(params,"i", car)) {
-            Notificar(playerid, "erro", "ADMIN", "Carro invalido", 5000);
+            Notificar(playerid, "ADMIN", "Carro invalido");
+        }else if(car < 400 || car >611) {
+            Notificar(playerid, "ADMIN", "Adicione um id válido.");
+        } else {
+            V_Create(playerid, car);
         }
-        if(car < 400 || car >611) {
-            Notificar(playerid, "erro", "ADMIN", "Carro invalido", 5000);
-        }
-        V_Create(playerid, car);
     }
     return 1;
 }

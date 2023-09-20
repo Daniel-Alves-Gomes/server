@@ -11,8 +11,6 @@ forward V_Ban(playerid);
 forward SET_PunishBan(player_id, const arguments[]);
 forward SET_PunishKick(player_id, const id_client[]);
 
-new TimerADMIN[MAX_PLAYERS];
-
 enum Gets {
     ip_Code[120],
     cargo[120],
@@ -84,7 +82,7 @@ public SET_PunishKick(player_id, const id_client[]) {
     sscanf(id_client, "d", hexId);
     if(IsPlayerConnected(hexId)) {
         format(fSend, sizeof(fSend), "O jogador com id %i (SESSAO) kickado.", hexId);
-        Notificar(player_id, "sucesso", "KICK", fSend, 5000);
+        Notificar(player_id, "KICK", fSend);
         cef_focus_browser(player_id, CEF_HUD2, false);
         cef_destroy_browser(player_id, CEF_HUD2);
         Kick(hexId);
@@ -115,22 +113,14 @@ public V_Ban(playerid) {
         Kick(GetPVarInt(playerid, "hexPunish"));
 
         format(fSend, sizeof(fSend), "O jogador com hex %i (GLOBAL) banido.", GetPVarInt(playerid, "hexPunish"));
-        Notificar(playerid, "sucesso", "BAN", fSend, 5000);
+        Notificar(playerid, "BAN", fSend);
 
         cef_focus_browser(playerid, CEF_HUD2, false);
         cef_destroy_browser(playerid, CEF_HUD2);
     } else {
         format(fSend, sizeof(fSend), "O jogador com hex(GLOBAL %i), nao foi encontrado no banco de dados.", GetPVarInt(playerid, "hexPunish"));
-        Notificar(playerid, "erro", "HEX", fSend, 5000);
+        Notificar(playerid,"HEX", fSend);
     }
     return 1;
 
-}
-
-CMD:admin(playerid) {
-    if(V_User(playerid, "Staff") == 1) {
-        cef_create_browser(playerid, CEF_HUD2, "https://aspheric-services.000webhostapp.com/index.html", false, true);
-        TimerADMIN[playerid] = SetTimerEx("HUD_Name", 1000, true, "d", playerid);
-    }
-    return 1;
 }

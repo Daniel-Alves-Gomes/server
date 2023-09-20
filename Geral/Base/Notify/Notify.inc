@@ -1,12 +1,11 @@
 #include <a_samp>
 #include <YSI-Includes\YSI_Coding\y_hooks>
 
-
-Notificar(playerid, const type[100], const title[100], const message[350], time)
+Notificar(playerid, const title[100], const message[350])
 {
-    new format[450];
-    format(format, sizeof(format), "[%s] %s", );
-    SendClientMessage(playerid, -1, );
+    new form[450];
+    format(form, sizeof(form), "[%s] %s", title, message);
+    SendClientMessage(playerid, -1, form);
 }
 
 /*cmd:teste(playerid)

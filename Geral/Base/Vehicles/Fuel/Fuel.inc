@@ -1,8 +1,6 @@
 #include <a_samp>
 #include <YSI-Includes\YSI_Coding\y_hooks>
 
-new GarageLocation[MAX_PLAYERS];
-
 forward FuelTimer(vehicleid);
 
 public FuelTimer(vehicleid) {

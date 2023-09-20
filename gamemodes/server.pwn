@@ -11,17 +11,13 @@
 #include <playervehicle>
 #include <YSI-Includes\YSI_Coding\y_hooks>
 #include "../Geral/Server/Database_Central.inc"
-//#include "../Geral/Server/Hud/Start.inc"
 #include "../Geral/Server/Config/Formats/Format.inc"
 #include "../Geral/Base/Groups/Group.inc"
 #include "../Geral/Base/Notify/Notify.inc"
-//#include "../Geral/Base/Empregos/Empregos.inc"
 #include "../Geral/Base/Vehicles/Stats/Create.inc"
 #include "../Geral/Base/Vehicles/Vehicle.inc"
-#include "../Geral/Base/Vehicles/Fuel/Fuel.inc"
 #include "../Geral/Base/Vehicles/Stats/Engine.inc"
-#include "../Geral/Base/Vehicles/Stats/Cinto.inc"
-#include "../Geral/Base/Vehicles/Stats/Garage.inc"
+#include "../Geral/Base/Vehicles/Fuel/Fuel.inc"
 #include "../Geral/Base/Inventory/InventoryClass.inc"
 #include "../Geral/Base/Organizacoes/Organizacao.inc"
 #include "../Geral/Base/Organizacoes/Gangues/Workbench/Bancada.inc"
@@ -61,7 +57,6 @@ public OnPlayerConnect(playerid)
 public InfoUser(playerid) {
     if(cache_num_rows() > 0) {
         cache_get_value_name_int(0, "hex", hexUser[playerid][hex]);
-		printf("%d", hexUser[playerid][hex]);
     } else {
         Kick(playerid);
     }

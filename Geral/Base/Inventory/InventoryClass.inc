@@ -1,7 +1,7 @@
 #include <a_samp>
 #include <YSI-Includes\YSI_Coding\y_hooks>
  
-#define K2::%0(%1) 		forward %0(%1);\
+#define PF::%0(%1) 		forward %0(%1);\
 							public %0(%1)
  
 #define COLOR_GRAD2             0xBFC0C2AA
@@ -101,7 +101,21 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 	return 0;
 }
 
-CMD:pegaritem (playerid)
+CMD:garmas(playerid) {
+	new weapon = GetPlayerWeapon(playerid);
+	new ammo = GetPlayerAmmo(playerid);
+	if(weapon != 0) {
+		GanharItem(playerid, GetArmaInv(weapon), 1);
+		GanharItem(playerid, 322, ammo);
+		RemovePlayerWeapon(playerid, weapon);
+		weapon = 0;
+		ammo = 0;
+		Notificar(playerid, "INVENTARIO", "Sua arma foi guardada com sucesso!");
+	}
+	return 1;
+}
+
+CMD:pegaritem(playerid)
 {
     new Float:x, Float:y, Float:z;
     for(new i = 0; i < sizeof(DropItemSlot); i++)
@@ -187,9 +201,9 @@ CMD:daritem(playerid, const params[])
 		if(!CheckInventario(id, item)) return SendClientMessage(playerid, COLOR_GRAD1, "O inventario desse jogador está cheio.");
 		GanharItem(id, item, quantia);
 		format(strNotf, sizeof(strNotf), "Você deu %d unidades de %s para %s", quantia, ItemNomeInv(item), PlayerName(id));
-		Notificar(playerid, "sucesso", "HEY!", strNotf, 5000);
+		Notificar(playerid, "HEY!", strNotf);
 	} else {
-		Notificar(playerid, "erro", "ERRO! ERRO!", "Voce nao e administrador", 5000);
+		Notificar(playerid,  "ERRO! ERRO!", "Voce nao e administrador");
 	}
 	return 1;
 }
@@ -234,7 +248,7 @@ GanharItem(playerid, itemid, quantia)
 	return 1;
 }
  
-K2::CriarInventario(playerid)
+PF::CriarInventario(playerid)
 {
     new query[512];
     format(query, sizeof(query), "SELECT * FROM inventario WHERE player_id = %d", hexUser[playerid][hex]);
@@ -242,7 +256,7 @@ K2::CriarInventario(playerid)
     return 1;
 }
 
-K2::CreateInventoryCallback(playerid)
+PF::CreateInventoryCallback(playerid)
 {
     if (cache_num_rows() > 0)
     {
@@ -270,8 +284,8 @@ K2::CreateInventoryCallback(playerid)
 
     return 1;
 }
- 
-K2::LoadInv(playerid)
+
+PF::LoadInv(playerid)
 {
     new query[512];
     format(query, sizeof(query), "SELECT * FROM inventario WHERE player_id = %d", hexUser[playerid][hex]);
@@ -279,7 +293,7 @@ K2::LoadInv(playerid)
     return 1;
 }
 
-K2::LoadPlayerInventoryCallback(playerid)
+PF::LoadPlayerInventoryCallback(playerid)
 {
     if (cache_num_rows() > 0)
     {
@@ -303,7 +317,7 @@ K2::LoadPlayerInventoryCallback(playerid)
     return 1;
 }
 
-K2::SalvarInventario(playerid)
+PF::SalvarInventario(playerid)
 {
     new query[512];
     for(new i = 1; i < 33; i++) {
@@ -330,6 +344,14 @@ CheckInventario(playerid, itemid)
 	}
 	return 0;
 }
+
+CheckItem(playerid, itemid, quantia) {
+	for(new i = 1; i < 33; ++i)
+	{
+		if(PlayerInventario[playerid][i][Slot] == itemid || PlayerInventario[playerid][i][Unidades] => quantia) return 1;
+	}
+	return 0;
+}
  
 ItemNomeInv(itemid) // AQUI VOCÊ PODE ADICIONAR OS ID DOS ITENS E SETAR SEU NOME (OBS: TOME CUIDADO AO OPTAR O USO DE LOOPS)
 {
@@ -339,9 +361,16 @@ ItemNomeInv(itemid) // AQUI VOCÊ PODE ADICIONAR OS ID DOS ITENS E SETAR SEU NOM
 	else
 	switch(itemid)
 	{
-		case 322: name = "Muni.";
+		case 1279: name = "Polvora";
+		case 630: name = "Planta Maconha";
+		case 1575: name = "Pasta Base";
+		case 19873: name = "Papel";
+		case 354: name = "Cano";
+		case 1145: name = "Chapa de Metal";
+		case 322: name = "Capsula";
+		case 2061: name = "Municao";
 		case 11746: name = "Chave";
-		case 3044: name = "Baseado";//Editavel
+		case 3044: name = "Baseado";                                                                                                                                                                                                                                                         
 		case 19039: name = "Relogio de Ouro";
 		case 19040: name = "Relogio de Prata";
 		case 19042: name = "Relogio Dourado";
@@ -470,6 +499,7 @@ ItemNomeInv(itemid) // AQUI VOCÊ PODE ADICIONAR OS ID DOS ITENS E SETAR SEU NOM
 		case 19897: name = "Maco de Cigarro";
 		case 1546: name = "Refrigerante";
 		case 2768: name = "Hamburger";
+		case 1550: name = "Dinheiro Sujo";
 		case 1212: name = "Dinheiro";
 		case 2601: name = "Refrigerante";
 		case 19835: name = "Cafe";
@@ -496,7 +526,6 @@ ItemNomeInv(itemid) // AQUI VOCÊ PODE ADICIONAR OS ID DOS ITENS E SETAR SEU NOM
 		case 19055: name = "Caixa Media";
 		case 19057: name = "Caixa Ouro";
 		case 19058: name = "Caixa VIP";
-		case 331: name = "Soco Ingles";
 		case 333: name = "Taco de Golfe";
 		case 334: name = "Cacetete";
 		case 335: name = "Faca";
@@ -521,8 +550,8 @@ ItemNomeInv(itemid) // AQUI VOCÊ PODE ADICIONAR OS ID DOS ITENS E SETAR SEU NOM
 		case 351: name = "Combat Shotgun";
 		case 352: name = "Uzi";
 		case 353: name = "MP5";
-		case 355: name = "AK - 47";
-		case 356: name = "M4";
+		case 355: name = "Sig-Sauer";
+		case 356: name = "M4A1";
 		case 372: name = "Tec-9";
 		case 357: name = "Country Rifle";
 		case 358: name = "Sniper Rifle";
@@ -542,8 +571,8 @@ ItemNomeInv(itemid) // AQUI VOCÊ PODE ADICIONAR OS ID DOS ITENS E SETAR SEU NOM
 	}
     return name;
 }
- 
-static  NomeArmas(armaid)
+
+static NomeArmas(armaid)
 {
     new name[35];
     switch(armaid)
@@ -572,8 +601,8 @@ static  NomeArmas(armaid)
         case 27: name = "Combat Shotgun";
         case 28: name = "Uzi";
         case 29: name = "MP5";
-        case 30: name = "AK - 47";
-        case 31: name = "M4";
+        case 30: name = "Sig-Sauer";
+        case 31: name = "M4A1";
         case 32: name = "Tec-9";
         case 33: name = "Country Rifle";
         case 34: name = "Sniper Rifle";
@@ -631,7 +660,16 @@ DroparItem(playerid, modelid, quantidade)
 	}
     return 0;
 }
- 
+RemoveItens(playerid, itemid, quantia) {
+	for(new i = 1; i < 33; i++) {
+		if(PlayerInventario[playerid][i][Slot] == itemid || PlayerInventario[playerid][i][Unidades] >= quantia) {
+			PlayerInventario[playerid][i][Unidades] -= quantia;
+			AtualizarInventario(playerid, i);
+			return 1;
+		}
+	}
+	return 0;
+}
 AtualizarInventario(playerid, i)
 {
     new str[64];
@@ -807,7 +845,7 @@ FuncaoItens(playerid, modelid, quantidade)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕ
 						PlayerInventario[playerid][modelid][Unidades] -= quantidade;
 						AtualizarInventario(playerid, modelid);
 					} else {
-						Notificar(playerid, "erro", "INVENTARIO", "Voce nao possui uma arma em sua mao para poder usar as municoes.", 5000);
+						Notificar(playerid, "INVENTARIO", "Voce nao possui uma arma em sua mao para poder usar as municoes.");
 					}
 				}
 			}
@@ -873,7 +911,7 @@ IsValidItemInv(itemid) //AQUI VOCÊ DEVE DEFINIR OS ID'S DOS ITENS PARA SER VALI
 	if(GetArmaInv(itemid)) return 1;
 	switch(itemid)
 	{
-		case 322, 19823, 19820, 11722, 11723, 19570, 19824, 1486, 19822, 1668, 2958, 19625, 11746,
+		case 1550, 1279, 2061, 19873, 1575, 630, 322, 19823, 19820, 11722, 11723, 19570, 19824, 1486, 19822, 1668, 2958, 19625, 11746,
 		3044, 19039, 19040, 19042, 19044, 19045, 19046, 19047, 11747, 18865, 18866, 18867,
 		18868, 18869, 18870, 18871, 18872, 18873, 18874, 19513, 18875, 19874, 19138, 19139,
 		19140, 19022, 19023, 19024, 19025, 19026, 19027, 19028, 19029, 19030, 19031, 19032,
@@ -885,7 +923,7 @@ IsValidItemInv(itemid) //AQUI VOCÊ DEVE DEFINIR OS ID'S DOS ITENS PARA SER VALI
 		19134, 19904, 19515, 19142, 19315, 19527, 19317, 18688, 18702, 18728, 19605, 19606,
 		19607, 19577, 1485, 19574, 19575, 19576, 2703, 2880, 19883, 19896, 19897, 1546, 2768, 1212,
 		2601, 19835, 2881, 2702, 2769, 2709, 19579, 19630, 19094, 1582, 19580, 19602, 11738,
-		1654, 11736, 1650, 1252, 19893, 19921, 2226, 19054, 19056, 19055, 19057,19058: return 1;
+		1654, 11736, 1650, 1252, 19893, 19921, 2226, 19054, 19056, 19055, 19057,354,1145,19058: return 1;
 	}
 	return 0;
 }
@@ -933,7 +971,7 @@ ConvertMoney(number)
     return string;
 }
  
-K2::TextDrawInv(playerid)
+PF::TextDrawInv(playerid)
 {
 
 	new emptyString[1];
