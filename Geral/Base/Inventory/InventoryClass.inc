@@ -105,8 +105,12 @@ CMD:garmas(playerid) {
 	new weapon = GetPlayerWeapon(playerid);
 	new ammo = GetPlayerAmmo(playerid);
 	if(weapon != 0) {
-		GanharItem(playerid, GetArmaInv(weapon), 1);
-		GanharItem(playerid, 322, ammo);
+		GanharItem(playerid, GetIDArma(weapon), 1);
+		if(ammo == 1) {
+
+		} else {
+			GanharItem(playerid, 322, ammo);
+		}
 		RemovePlayerWeapon(playerid, weapon);
 		weapon = 0;
 		ammo = 0;
@@ -348,7 +352,7 @@ CheckInventario(playerid, itemid)
 CheckItem(playerid, itemid, quantia) {
 	for(new i = 1; i < 33; ++i)
 	{
-		if(PlayerInventario[playerid][i][Slot] == itemid || PlayerInventario[playerid][i][Unidades] => quantia) return 1;
+		if(PlayerInventario[playerid][i][Slot] == itemid || PlayerInventario[playerid][i][Unidades] >= quantia) return 1;
 	}
 	return 0;
 }
@@ -698,14 +702,18 @@ AtualizarInventario(playerid, i)
  
 FuncaoItens(playerid, modelid, quantidade)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕES DE CADA ITEM. SEGUE AS FUNÇÕES PRONTAS ABAIXO
 {
-	new Float:life;
+	new Float:life5;
 	switch(PlayerInventario[playerid][modelid][Slot])
 	{
+		case 19515:
+		{
+			PlayerInventario[playerid][modelid][Unidades]--;
+			StatsControl(playerid, 1, 100.0, 0);
+			AtualizarInventario(playerid, modelid);
+		}
 		case 331..371://
         {
             GivePlayerWeapon(playerid, GetArmaInv(PlayerInventario[playerid][modelid][Slot]), PlayerInventario[playerid][modelid][Unidades]);
-           // format(str, sizeof(str), "*%s retirou uma %s de sua mochila.", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
-           // SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
             PlayerInventario[playerid][modelid][Unidades] = 0;
             AtualizarInventario(playerid, modelid);
             return 1;
@@ -713,16 +721,12 @@ FuncaoItens(playerid, modelid, quantidade)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕ
         case 19823, 19820, 1486, 19824, 19822, 2958://Bebidas Alcoolicas
         {
         	PlayerInventario[playerid][modelid][Unidades]--;
-        	GetPlayerHealth(playerid, life);
-        	SetPlayerHealth(playerid, life+1);
-        	GetPlayerHealth(playerid, life);
-        	if(life > 100){SetPlayerHealth(playerid, 100);}
-        	//format(str, 128, "*%s bebeu uma garrava de %s", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
-			new animlib[24], animname[24];
+        	StatsControl(playerid, 3, 0.0, 15);
+        	if(life5 > 100){SetPlayerHealth(playerid, 100);}
+        	new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "VENDING");
 			format(animname, sizeof(animname), "VEND_Drink_P");
 			ApplyAnimation(playerid, animlib, animname, 4.1, 0, 0, 0, 0, 0, 1);
-           // SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
             AtualizarInventario(playerid, modelid);
             SetPlayerSpecialAction(playerid, SPECIAL_ACTION_DRINK_BEER);
             SetPlayerSpecialAction(playerid, SPECIAL_ACTION_DRINK_WINE);
@@ -731,30 +735,22 @@ FuncaoItens(playerid, modelid, quantidade)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕ
         case 11722, 11723://Mostarda & Ketchup
         {
         	PlayerInventario[playerid][modelid][Unidades]--;
-        	GetPlayerHealth(playerid, life);
-        	SetPlayerHealth(playerid, life+3);
-        	GetPlayerHealth(playerid, life);
-        	if(life > 100){SetPlayerHealth(playerid, 100);}
-        	//format(str, 128, "*%s comeu sache de %s", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
-			new animlib[24], animname[24];
+        	StatsControl(playerid, 4, 0.0, 30);
+        	if(life5 > 100){SetPlayerHealth(playerid, 100);}
+        	new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "FOOD");
 			format(animname, sizeof(animname), "EAT_Burger");
-           // SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
             AtualizarInventario(playerid, modelid);
             return 1;
         }
         case 19570, 1668, 1546, 2601://Leite & Agua & Refrigerante
         {
-        	GetPlayerHealth(playerid, life);
-        	SetPlayerHealth(playerid, life+25);
-        	GetPlayerHealth(playerid, life);
-        	if(life > 100){SetPlayerHealth(playerid, 100);}
+        	StatsControl(playerid, 3, 0.0, 50);
+        	if(life5 > 100){SetPlayerHealth(playerid, 100);}
         	PlayerInventario[playerid][modelid][Unidades]--;
-        	//format(str, 128, "*%s bebeu uma garrava de %s", PlayerName(playerid), ItemNomeInv(PlayerInventario[playerid][modelid][Slot]));
         	new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "VENDING");
 			format(animname, sizeof(animname), "VEND_Drink_P");
-            //SendClientMessageInRange(10, playerid, str, 0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA,0xB384FFAA);
             AtualizarInventario(playerid, modelid);
             return 1;
         }
@@ -771,10 +767,8 @@ FuncaoItens(playerid, modelid, quantidade)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕ
         case 19574, 19575, 19576://Frutas
         {
         	PlayerInventario[playerid][modelid][Unidades]--;
-        	GetPlayerHealth(playerid, life);
-        	SetPlayerHealth(playerid, life+3);
-        	GetPlayerHealth(playerid, life);
-        	if(life > 100){SetPlayerHealth(playerid, 100);}
+        	StatsControl(playerid, 4, 0.0, 50);
+        	if(life5 > 100){SetPlayerHealth(playerid, 100);}
         	new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "FOOD");
 			format(animname, sizeof(animname), "EAT_Burger");
@@ -784,10 +778,8 @@ FuncaoItens(playerid, modelid, quantidade)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕ
         case 2703, 2880, 2768, 19094, 2769, 19579, 19630://Hamburgers & Peixes & Taco & Pão
         {
         	PlayerInventario[playerid][modelid][Unidades]--;
-        	GetPlayerHealth(playerid, life);
-        	SetPlayerHealth(playerid, life+35);
-        	GetPlayerHealth(playerid, life);
-        	if(life > 100){SetPlayerHealth(playerid, 100);}
+        	StatsControl(playerid, 4, 0.0, 50);
+     		if(life5 > 100){SetPlayerHealth(playerid, 100);}   
         	new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "FOOD");
 			format(animname, sizeof(animname), "EAT_Burger");
@@ -797,10 +789,8 @@ FuncaoItens(playerid, modelid, quantidade)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕ
         case 2881, 2702, 1582, 19580://Pizzas
         {
         	PlayerInventario[playerid][modelid][Unidades]--;
-        	GetPlayerHealth(playerid, life);
-        	SetPlayerHealth(playerid, life+35);
-        	GetPlayerHealth(playerid, life);
-        	if(life > 100){SetPlayerHealth(playerid, 100);}
+        	StatsControl(playerid, 4, 0.0, 50);
+        	if(life5 > 100){SetPlayerHealth(playerid, 100);}
         	new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "FOOD");
 			format(animname, sizeof(animname), "EAT_Burger");
@@ -809,20 +799,16 @@ FuncaoItens(playerid, modelid, quantidade)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕ
         }
         case 2709://Remedio
         {
-        	GetPlayerHealth(playerid, life);
-        	SetPlayerHealth(playerid, life+10);
-        	GetPlayerHealth(playerid, life);
-        	if(life > 100){SetPlayerHealth(playerid, 100);}
+        	StatsControl(playerid, 2, 25.0, 0);
+        	if(life5 > 100){SetPlayerHealth(playerid, 100);}
         	PlayerInventario[playerid][modelid][Unidades]--;
         	AtualizarInventario(playerid, modelid);
             return 1;
         }
         case 11738://Remedio Grande
         {
-        	GetPlayerHealth(playerid, life);
-        	SetPlayerHealth(playerid, life+50);
-        	GetPlayerHealth(playerid, life);
-        	if(life > 100){SetPlayerHealth(playerid, 100);}
+        	StatsControl(playerid, 2, 50.0, 0);
+        	if(life5 > 100){SetPlayerHealth(playerid, 100);}
         	PlayerInventario[playerid][modelid][Unidades]--;
         	AtualizarInventario(playerid, modelid);
             return 1;
@@ -854,8 +840,59 @@ FuncaoItens(playerid, modelid, quantidade)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕ
 	}
 	return 0;
 }
- 
-static  GetArmaInv(i)
+
+static GetIDArma(i)
+{
+    switch(i)
+    {
+		case 331: return 1;
+        case 333: return 2;
+        case 334: return 3;
+        case 335: return 4;
+        case 336: return 5;
+        case 337: return 6;
+        case 338: return 7;
+        case 339: return 8;
+        case 341: return 9;
+        case 321: return 10;
+        case 322: return 11;
+        case 323: return 12;
+        case 324: return 13;
+        case 325: return 14;
+        case 326: return 15;
+        case 342: return 16;
+        case 343: return 17;
+        case 344: return 18;
+        case 346: return 22;
+        case 347: return 23;
+        case 348: return 24;
+        case 349: return 25;
+        case 350: return 26;
+        case 351: return 27;
+        case 352: return 28;
+        case 353: return 29;
+        case 355: return 30;
+        case 356: return 31;
+        case 372: return 32;
+        case 357: return 33;
+        case 358: return 34;
+        case 359: return 35;
+        case 360: return 36;
+        case 361: return 37;
+        case 362: return 38;
+        case 363: return 39;
+        case 364: return 40;
+        case 365: return 41;
+        case 366: return 42;
+        case 367: return 43;
+        case 368: return 44;
+        case 369: return 45;
+        case 371: return 46;
+    }
+    return 1;
+}
+
+static GetArmaInv(i)
 {
     switch(i)
     {

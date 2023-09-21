@@ -13,6 +13,7 @@
 #include "../Geral/Server/Database_Central.inc"
 #include "../Geral/Server/Config/Formats/Format.inc"
 #include "../Geral/Base/Groups/Group.inc"
+#include "../Geral/Server/Textdraws/Hud.inc"
 #include "../Geral/Base/Notify/Notify.inc"
 #include "../Geral/Base/Vehicles/Stats/Create.inc"
 #include "../Geral/Base/Vehicles/Vehicle.inc"
