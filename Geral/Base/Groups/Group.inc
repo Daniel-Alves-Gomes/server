@@ -2,7 +2,6 @@
 #include <YSI-Includes\YSI_Coding\y_hooks>
 #include "../Geral/Base/Groups/Hooks/Hook.inc"
 
-#define CEF_HUD2 (2)
 #define SCMf SendClientMessagef
 
 forward GET_PlayerStats(playerid);
@@ -28,11 +27,6 @@ hook OnPlayerConnect(playerid) {
     cef_subscribe("pwd:tryBan", "SET_PunishBan");
     cef_subscribe("pwd:tryKick", "SET_PunishKick");
     return 1;
-}
-
-hook OnPlayerDisconnect(playerid, reason) {
-    cef_destroy_browser(playerid, CEF_HUD2);
-	return 1;
 }
 
 hook OnPlayerSpawn(playerid) {
@@ -74,53 +68,4 @@ public GET_PlayerStats(playerid) {
         Kick(playerid);
     }
     return 1;
-}
-
-public SET_PunishKick(player_id, const id_client[]) {
-    new fSend[350];
-    new hexId;
-    sscanf(id_client, "d", hexId);
-    if(IsPlayerConnected(hexId)) {
-        format(fSend, sizeof(fSend), "O jogador com id %i (SESSAO) kickado.", hexId);
-        Notificar(player_id, "KICK", fSend);
-        cef_focus_browser(player_id, CEF_HUD2, false);
-        cef_destroy_browser(player_id, CEF_HUD2);
-        Kick(hexId);
-    }
-    return 1;
-}
-
-public SET_PunishBan(player_id, const arguments[]) {
-    new Query[128];
-    new motivoBan[128], idBan, tempoBan;
-    sscanf(arguments, "p<,>s[128]dd", motivoBan, idBan, tempoBan);
-    SetPVarInt(player_id, "hexPunish", idBan);
-    new timeDays;
-    timeDays = tempoBan*86400;
-    SetPVarInt(player_id, "tempoBan", timeDays);
-    pGet[player_id][mtvBan] = motivoBan;
-    mysql_format(ConexaoSQL, Query, sizeof(Query), "SELECT * FROM `server_accounts` WHERE `hex`='%i'", idBan);
-    mysql_tquery(ConexaoSQL, Query, "V_Ban", "i", player_id);
-}
-
-public V_Ban(playerid) {
-    new fSend[350];
-    new Query[350];
-    if(cache_num_rows() > 0) {
-        mysql_format(ConexaoSQL, Query, sizeof(Query), "INSERT INTO `punish_list` (`admin`, `hex`, `motivo`, `tempo`) VALUES ('%s', '%d', '%s', '%d')", GetPlayerNameEx(playerid), GetPVarInt(playerid, "hexPunish"), pGet[playerid][mtvBan], GetPVarInt(playerid, "tempoBan"));
-        mysql_query(ConexaoSQL, Query);
-        cef_destroy_browser(playerid, CEF_HUD2);
-        Kick(GetPVarInt(playerid, "hexPunish"));
-
-        format(fSend, sizeof(fSend), "O jogador com hex %i (GLOBAL) banido.", GetPVarInt(playerid, "hexPunish"));
-        Notificar(playerid, "BAN", fSend);
-
-        cef_focus_browser(playerid, CEF_HUD2, false);
-        cef_destroy_browser(playerid, CEF_HUD2);
-    } else {
-        format(fSend, sizeof(fSend), "O jogador com hex(GLOBAL %i), nao foi encontrado no banco de dados.", GetPVarInt(playerid, "hexPunish"));
-        Notificar(playerid,"HEX", fSend);
-    }
-    return 1;
-
 }

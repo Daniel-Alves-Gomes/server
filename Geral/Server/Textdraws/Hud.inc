@@ -18,6 +18,11 @@ new PlayerStats[MAX_PLAYERS][userInv];
 public UserStats(playerid) {
     PlayerStats[playerid][Eat] -= 1;
     PlayerStats[playerid][Water] -= 1;
+
+    PlayerTextDrawSetStringf(playerid, Hud[playerid][2], "%d", PlayerStats[playerid][Eat]);
+    PlayerTextDrawSetStringf(playerid, Hud[playerid][3], "%d", PlayerStats[playerid][Water]);
+
+
     return 1;
 }
 
@@ -27,7 +32,6 @@ public Load_Users(playerid) {
         cache_get_value_name_float(0, "armour", PlayerStats[playerid][armour]);
         cache_get_value_name_int(0, "eat", PlayerStats[playerid][Eat]);
         cache_get_value_name_int(0, "water", PlayerStats[playerid][Water]);
-        printf("%f, %f", PlayerStats[playerid][life], PlayerStats[playerid][armour]);
 
         SetPlayerHealth(playerid, PlayerStats[playerid][life]);
         SetPlayerArmour(playerid, PlayerStats[playerid][armour]);
@@ -91,12 +95,6 @@ hook OnPlayerConnect(playerid) {
     PlayerTextDrawBackgroundColor(playerid, Hud[playerid][3], 255);
     PlayerTextDrawFont(playerid, Hud[playerid][3], 1);
     PlayerTextDrawSetProportional(playerid, Hud[playerid][3], 0);
-
-    for(new i = 0; i < 4; i++) {
-        PlayerTextDrawShow(playerid, PlayerText:Hud[playerid][i]);
-    }
-
-    Timer[playerid] = SetTimerEx("UserStats", 420000, true, "i", playerid);
     
     return 1;
 
@@ -106,6 +104,12 @@ hook OnPlayerSpawn(playerid){
     new query[512];
     format(query, sizeof(query), "SELECT * FROM user_stats WHERE hex = %d", hexUser[playerid][hex]);
     mysql_tquery(ConexaoSQL, query, "Load_Users", "d", playerid);
+
+    for(new i = 0; i < 4; i++) {
+        PlayerTextDrawShow(playerid, PlayerText:Hud[playerid][i]);
+    }
+
+    Timer[playerid] = SetTimerEx("UserStats", 10000, true, "i", playerid);
 
     return 1;
 }

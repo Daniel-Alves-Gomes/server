@@ -1,5 +1,5 @@
 enum E_VEHICLE_DATA_FUEL {
-    Float:DATA_FUEL,
+    DATA_FUEL,
     TIME_FUEL,
     VEHICLE_STATS,
     VEHICLE_ON,

@@ -62,7 +62,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 	{
 		if(playertextid == DrawInv[playerid][i])
 		{
-			if(PlayerInventario[playerid][i][Slot] == -1)
+			if(PlayerInventario[playerid][i][Slot] == 0)
 			{
 				text = " ";
 			}
@@ -106,10 +106,10 @@ CMD:garmas(playerid) {
 	new ammo = GetPlayerAmmo(playerid);
 	if(weapon != 0) {
 		GanharItem(playerid, GetIDArma(weapon), 1);
-		if(ammo == 1) {
+		if(ammo <= 1) {
 
 		} else {
-			GanharItem(playerid, 322, ammo);
+			GanharItem(playerid, 2061, ammo);
 		}
 		RemovePlayerWeapon(playerid, weapon);
 		weapon = 0;
@@ -134,7 +134,7 @@ CMD:pegaritem(playerid)
 				DestroyDynamicObject(DropItemSlot[i][DropItem]);
 				DestroyDynamic3DTextLabel(DropItemSlot[i][LabelItem]);
 				DropItemSlot[i][DropItem] = 0;
-				DropItemSlot[i][DropItemID] = -1;
+				DropItemSlot[i][DropItemID] = 0;
 				DropItemSlot[i][DropItemUni] = 0;
 				DropItemSlot[i][Interior] = 0;
 				DropItemSlot[i][Virtual] = 0;
@@ -173,7 +173,7 @@ CMD:inventario(playerid)
 		for(new i = 1; i < 33; ++i)
 		{
 			PlayerTextDrawSetPreviewModel(playerid, DrawInv[playerid][i], PlayerInventario[playerid][i][Slot]);
-			if(PlayerInventario[playerid][i][Slot] == -1)
+			if(PlayerInventario[playerid][i][Slot] == 0)
 			{
 				PlayerTextDrawSetPreviewRot(playerid, DrawInv[playerid][i], 0.000000, 0.000000, 0.000000, 999);
 			}
@@ -241,7 +241,7 @@ GanharItem(playerid, itemid, quantia)
 			SalvarInventario(playerid);
 			return 1;
 		}
-		else if(PlayerInventario[playerid][i][Slot] == -1)
+		else if(PlayerInventario[playerid][i][Slot] == 0)
 		{
 			PlayerInventario[playerid][i][Slot] = itemid;
 			PlayerInventario[playerid][i][Unidades] = quantia;
@@ -273,13 +273,13 @@ PF::CreateInventoryCallback(playerid)
 		mysql_query(ConexaoSQL, query);
 		for(new i = 1; i < 33; i++) {
 			mysql_format(ConexaoSQL, query, sizeof(query), "UPDATE `inventario` SET \
-                `slot%i`='-1' \
+                `slot%i`='0' \
                 WHERE `player_id`='%i'", i, hexUser[playerid][hex]);
             mysql_query(ConexaoSQL, query);
 		}
 		for(new i = 1; i < 33; i++) {
 			mysql_format(ConexaoSQL, query, sizeof(query), "UPDATE `inventario` SET \
-                `slot%i_unidade`='-1' \
+                `slot%i_unidade`='0' \
                 WHERE `player_id`='%i'", i, hexUser[playerid][hex]);
             mysql_query(ConexaoSQL, query);
 		}
@@ -344,7 +344,7 @@ CheckInventario(playerid, itemid)
 {
 	for(new i = 1; i < 33; ++i)
 	{
-		if(PlayerInventario[playerid][i][Slot] == itemid || PlayerInventario[playerid][i][Unidades] == -1) return 1;
+		if(PlayerInventario[playerid][i][Slot] == itemid || PlayerInventario[playerid][i][Unidades] == 0) return 1;
 	}
 	return 0;
 }
@@ -360,7 +360,7 @@ CheckItem(playerid, itemid, quantia) {
 ItemNomeInv(itemid) // AQUI VOCÊ PODE ADICIONAR OS ID DOS ITENS E SETAR SEU NOME (OBS: TOME CUIDADO AO OPTAR O USO DE LOOPS)
 {
 	new name[25];
-	format(name, 25, "(null)");
+	format(name, 25, "Nenhum");
     if(itemid >= 330 && itemid < 372) format(name, 25, NomeArmas(GetArmaInv(itemid))); // se for armas
 	else
 	switch(itemid)
@@ -571,7 +571,7 @@ ItemNomeInv(itemid) // AQUI VOCÊ PODE ADICIONAR OS ID DOS ITENS E SETAR SEU NOM
 		case 368: name = "Oculos Noturno";
 		case 369: name = "Osculo Termal";
 		case 371: name = "Parachute";
-		default: name = "(null)";
+		default: name = "Nenhum";
 	}
     return name;
 }
@@ -635,7 +635,7 @@ DroparItem(playerid, modelid, quantidade)
 			if(PlayerInventario[playerid][modelid][Unidades] >= quantidade) 
 			{
 				new str[128], Float:x, Float:y, Float:z;
-				if(PlayerInventario[playerid][modelid][Slot] != -1)
+				if(PlayerInventario[playerid][modelid][Slot] != 0)
 				{
 					GetPlayerPos(playerid, x,y,z);
 					for(new i = 0; i < MAX_OBJECTS; i++)
@@ -680,9 +680,9 @@ AtualizarInventario(playerid, i)
     if(PlayerInventario[playerid][i][Unidades] < 1)
     {
         PlayerInventario[playerid][i][Unidades] = 0;
-        PlayerInventario[playerid][i][Slot] = -1;
+        PlayerInventario[playerid][i][Slot] = 0;
     }
-    if(PlayerInventario[playerid][i][Slot] == -1)
+    if(PlayerInventario[playerid][i][Slot] == 0)
 	{
 		new emptyString[1];
 		PlayerTextDrawSetString(playerid, DrawInv[playerid][38], emptyString);
@@ -820,7 +820,7 @@ FuncaoItens(playerid, modelid, quantidade)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕ
         	AtualizarInventario(playerid, modelid);
         	return 1;
 		}
-		case 322:
+		case 2061:
 		{
 			if(quantidade > 0) {
 				new weapon = GetPlayerWeapon(playerid);
@@ -845,51 +845,51 @@ static GetIDArma(i)
 {
     switch(i)
     {
-		case 331: return 1;
-        case 333: return 2;
-        case 334: return 3;
-        case 335: return 4;
-        case 336: return 5;
-        case 337: return 6;
-        case 338: return 7;
-        case 339: return 8;
-        case 341: return 9;
-        case 321: return 10;
-        case 322: return 11;
-        case 323: return 12;
-        case 324: return 13;
-        case 325: return 14;
-        case 326: return 15;
-        case 342: return 16;
-        case 343: return 17;
-        case 344: return 18;
-        case 346: return 22;
-        case 347: return 23;
-        case 348: return 24;
-        case 349: return 25;
-        case 350: return 26;
-        case 351: return 27;
-        case 352: return 28;
-        case 353: return 29;
-        case 355: return 30;
-        case 356: return 31;
-        case 372: return 32;
-        case 357: return 33;
-        case 358: return 34;
-        case 359: return 35;
-        case 360: return 36;
-        case 361: return 37;
-        case 362: return 38;
-        case 363: return 39;
-        case 364: return 40;
-        case 365: return 41;
-        case 366: return 42;
-        case 367: return 43;
-        case 368: return 44;
-        case 369: return 45;
-        case 371: return 46;
+		case 1: return 331;
+		case 2: return 333;
+		case 3: return 334;
+		case 4: return 335;
+		case 5: return 336;
+		case 6: return 337;
+		case 7: return 338;
+		case 8: return 339;
+		case 9: return 341;
+		case 10: return 321;
+		case 11: return 322;
+		case 12: return 323;
+		case 13: return 324;
+		case 14: return 325;
+		case 15: return 326;
+		case 16: return 342;
+		case 17: return 343;
+		case 18: return 344;
+		case 22: return 346;
+		case 23: return 347;
+		case 24: return 348;
+		case 25: return 349;
+		case 26: return 350;
+		case 27: return 351;
+		case 28: return 352;
+		case 29: return 353;
+		case 30: return 355;
+		case 31: return 356;
+		case 32: return 372;
+		case 33: return 357;
+		case 34: return 358;
+		case 35: return 359;
+		case 36: return 360;
+		case 37: return 361;
+		case 38: return 362;
+		case 39: return 363;
+		case 40: return 364;
+		case 41: return 365;
+		case 42: return 366;
+		case 43: return 367;
+		case 44: return 368;
+		case 45: return 369;
+		case 46: return 371;
     }
-    return 1;
+	return 1;
 }
 
 static GetArmaInv(i)

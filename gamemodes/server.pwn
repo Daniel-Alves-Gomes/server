@@ -8,17 +8,25 @@
 #include <sscanf2>
 #include <streamer>
 #include <fuelvehicle>
-#include <playervehicle>
 #include <YSI-Includes\YSI_Coding\y_hooks>
+#include <YSI-Includes\YSI_Players\y_android>
+
 #include "../Geral/Server/Database_Central.inc"
 #include "../Geral/Server/Config/Formats/Format.inc"
 #include "../Geral/Base/Groups/Group.inc"
 #include "../Geral/Server/Textdraws/Hud.inc"
-#include "../Geral/Base/Notify/Notify.inc"
-#include "../Geral/Base/Vehicles/Stats/Create.inc"
+#include "../Geral/Base/User/Connection/ConnectionQuery.inc"
+
+//CARS
+
 #include "../Geral/Base/Vehicles/Vehicle.inc"
+#include "../Geral/Base/Vehicles/Stats/Create.inc"
 #include "../Geral/Base/Vehicles/Stats/Engine.inc"
-#include "../Geral/Base/Vehicles/Fuel/Fuel.inc"
+#include "../Geral/Server/Textdraws/Velo.inc"
+
+//
+
+#include "../Geral/Base/Notify/Notify.inc"
 #include "../Geral/Base/Inventory/InventoryClass.inc"
 #include "../Geral/Base/Organizacoes/Organizacao.inc"
 #include "../Geral/Base/Organizacoes/Gangues/Workbench/Bancada.inc"
