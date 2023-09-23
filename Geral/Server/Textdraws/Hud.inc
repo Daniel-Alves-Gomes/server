@@ -16,11 +16,28 @@ enum userInv {
 new PlayerStats[MAX_PLAYERS][userInv];
 
 public UserStats(playerid) {
+
+    new query[128];
+    new Float:life3;
+    new Float:armour3;
+
     PlayerStats[playerid][Eat] -= 1;
     PlayerStats[playerid][Water] -= 1;
 
     PlayerTextDrawSetStringf(playerid, Hud[playerid][2], "%d", PlayerStats[playerid][Eat]);
     PlayerTextDrawSetStringf(playerid, Hud[playerid][3], "%d", PlayerStats[playerid][Water]);
+
+    GetPlayerHealth(playerid, Float:life3);
+    GetPlayerArmour(playerid, Float:armour3);
+
+	mysql_format(ConexaoSQL, query, sizeof(query), "UPDATE `user_stats` SET \
+                `life`='%f', \
+                `armour`='%f', \
+                `eat`='%d', \
+                `water`='%d' \
+                WHERE `hex`='%d'", life3, armour3, PlayerStats[playerid][Eat], PlayerStats[playerid][Water], hexUser[playerid][hex]);
+    mysql_query(ConexaoSQL, query);
+
     return 1;
 }
 
@@ -106,28 +123,12 @@ hook OnPlayerSpawn(playerid){
         PlayerTextDrawShow(playerid, PlayerText:Hud[playerid][i]);
     }
 
-    Timer[playerid] = SetTimerEx("UserStats", 1000, true, "i", playerid);
+    Timer[playerid] = SetTimerEx("UserStats", 100000, true, "i", playerid);
 
     return 1;
 }
 
 hook OnPlayerDisconnect(playerid, reason) {
-    new query[128];
-    new Float:life3;
-    new Float:armour3;
-
-    GetPlayerHealth(playerid, Float:life3);
-    GetPlayerArmour(playerid, Float:armour3);
-
-	mysql_format(ConexaoSQL, query, sizeof(query), "UPDATE `inventario` SET \
-                `life`='%f' \
-                `armour`='%f' \
-                `eat`='%d' \
-                `water`='%d' \
-                WHERE `hex`='%i'", life, armour, PlayerStats[playerid][Eat], PlayerStats[playerid][Water], hexUser[playerid][hex]);
-    mysql_query(ConexaoSQL, query);
-
-    printf("E - %d W - %d", PlayerStats[playerid][Eat], PlayerStats[playerid][Water]);
 
     KillTimer(Timer[playerid]);
 

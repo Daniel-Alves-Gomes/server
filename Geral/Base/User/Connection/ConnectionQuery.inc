@@ -1,5 +1,6 @@
 #include <a_samp>
 #include <YSI-Includes\YSI_Coding\y_hooks>
+#include "../Geral/Base/User/Connection/Selector.inc"
 
 enum gets {
     Whitelist,
@@ -59,8 +60,8 @@ stock WL_Query(playerid) {
                 OpenSelector(playerid);
             } else {
                 SpawnPlayer(playerid);
+                SetSpawnInfo(playerid, NO_TEAM, getsUser[playerid][Skin], getsUser[playerid][xS], getsUser[playerid][yS], getsUser[playerid][zS], 0, 0, 0, 0, 0, 0, 0);
                 TogglePlayerSpectating(playerid, false);
-                SetSpawnInfo(playerid, 0, getsUser[playerid][Skin], getsUser[playerid][xS], getsUser[playerid][yS], getsUser[playerid][zS], 0, 0, 0, 0, 0, 0, 0);
             }
         } else {
             Kick(playerid);
@@ -76,5 +77,18 @@ hook OnPlayerConnect(playerid) {
     static Query[128];
     mysql_format(ConexaoSQL, Query, sizeof(Query), "SELECT * FROM `server_accounts` WHERE `nome`='%e'", GetPlayerNameEx(playerid));
     mysql_tquery(ConexaoSQL, Query, "LOAD_Mysql", "i", playerid);
+    return 1;
+}
+
+hook OnPlayerDisconnect(playerid, reason) {
+    new Float:Pos[MAX_PLAYERS][3];
+    new Query[128];
+    GetPlayerPos(playerid, Pos[playerid][0], Pos[playerid][1], Pos[playerid][2]);
+    mysql_format(ConexaoSQL, Query, sizeof(Query), "UPDATE `server_accounts` SET \
+        `x`='%f', \
+        `y`='%f', \
+        `z`='%f' \
+        WHERE `nome`='%s'", Pos[playerid][0], Pos[playerid][1], Pos[playerid][2], GetPlayerNameEx(playerid));
+    mysql_query(ConexaoSQL, Query);
     return 1;
 }

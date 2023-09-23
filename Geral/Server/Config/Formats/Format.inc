@@ -6,6 +6,7 @@
 #define PRESSED(%0) \
 	(((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))
 
+
 stock SQL_Errno(Error) {
     new errno[59];
     if(Error == 1049) {

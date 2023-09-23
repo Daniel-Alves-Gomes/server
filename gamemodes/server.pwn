@@ -10,13 +10,12 @@
 #include <fuelvehicle>
 #include <YSI-Includes\YSI_Coding\y_hooks>
 #include <YSI-Includes\YSI_Players\y_android>
-
 #include "../Geral/Server/Database_Central.inc"
 #include "../Geral/Server/Config/Formats/Format.inc"
 #include "../Geral/Base/Groups/Group.inc"
 #include "../Geral/Server/Textdraws/Hud.inc"
+
 #include "../Geral/Base/User/Connection/ConnectionQuery.inc"
-#include "../Geral/Base/User/Connection/Selector.inc"
 
 //CARS
 

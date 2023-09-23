@@ -208,6 +208,8 @@ hook OnPlayerUpdate(playerid) {
         AbrirVelo(playerid, vehicleId[playerid]);
     } else if(GetPlayerState(playerid) == PLAYER_STATE_PASSENGER) {
         AbrirVelo(playerid, vehicleId[playerid]);
+    } else if(!IsPlayerInAnyVehicle(playerid)) {
+        FecharVelo(playerid);
     }
     return 1;
 }
