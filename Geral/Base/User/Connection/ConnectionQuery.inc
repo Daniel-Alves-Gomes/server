@@ -59,6 +59,7 @@ stock WL_Query(playerid) {
                 OpenSelector(playerid);
             } else {
                 SpawnPlayer(playerid);
+                TogglePlayerSpectating(playerid, false);
                 SetSpawnInfo(playerid, 0, getsUser[playerid][Skin], getsUser[playerid][xS], getsUser[playerid][yS], getsUser[playerid][zS], 0, 0, 0, 0, 0, 0, 0);
             }
         } else {
