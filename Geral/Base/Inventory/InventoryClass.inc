@@ -28,6 +28,9 @@ new DropItemSlot[MAX_OBJECTS][iInv];
 new PlayerText:DrawInv[MAX_PLAYERS][40];
 new InventarioAberto[MAX_PLAYERS];
 new QuantidadeSelector[MAX_PLAYERS];
+new weaponMoment[MAX_PLAYERS];
+new weaponId[MAX_PLAYERS];
+new weaponAmmo[MAX_PLAYERS];
 
 static stock PlayerName(playerid)
 {
@@ -47,6 +50,11 @@ hook OnPlayerDisconnect(playerid, reason)
 {
 	InventarioAberto[playerid] = 0;
 	SalvarInventario(playerid);
+	GanharItem(playerid, GetIDArma(weaponId[playerid]), 1);
+	if(weaponAmmo[playerid] > 1) {
+		GanharItem(playerid, 2061, weaponAmmo[playerid]);
+	}
+	weaponMoment[playerid] = 0;
 	return 1;
 }
 
@@ -102,18 +110,19 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 }
 
 CMD:garmas(playerid) {
-	new weapon = GetPlayerWeapon(playerid);
+	new weaponGarmas = GetPlayerWeapon(playerid);
 	new ammo = GetPlayerAmmo(playerid);
-	if(weapon != 0) {
-		GanharItem(playerid, GetIDArma(weapon), 1);
+	if(weaponGarmas != 0) {
+		GanharItem(playerid, GetIDArma(weaponGarmas), 1);
 		if(ammo <= 1) {
 
 		} else {
 			GanharItem(playerid, 2061, ammo);
 		}
-		RemovePlayerWeapon(playerid, weapon);
-		weapon = 0;
+		RemovePlayerWeapon(playerid, weaponGarmas);
+		weaponGarmas = 0;
 		ammo = 0;
+		weaponMoment[playerid] = 0;
 		Notificar(playerid, "INVENTARIO", "Sua arma foi guardada com sucesso!");
 	}
 	return 1;
@@ -138,10 +147,10 @@ CMD:pegaritem(playerid)
 				DropItemSlot[i][DropItemUni] = 0;
 				DropItemSlot[i][Interior] = 0;
 				DropItemSlot[i][Virtual] = 0;
-				new animlib[24], animname[24];
+				new animlib[24], animeName[24];
 				format(animlib, sizeof(animlib), "BOMBER");
-				format(animname, sizeof(animname), "BOM_Plant");
-				ApplyAnimation(playerid, animlib, animname, 4.1, 0, 0, 0, 0, 0, 1);
+				format(animeName, sizeof(animeName), "BOM_Plant");
+				ApplyAnimation(playerid, animlib, animeName, 4.1, 0, 0, 0, 0, 0, 1);
                 return 1;
             }
         }
@@ -651,10 +660,10 @@ DroparItem(playerid, modelid, quantidade)
 							DropItemSlot[i][LabelItem] = CreateDynamic3DTextLabel(str, COLOR_GRAD5, x,y,z-1, 5, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
 							PlayerInventario[playerid][modelid][Unidades] -= quantidade;
 							AtualizarInventario(playerid, modelid);
-							new animlib[24], animname[24];
-							format(animlib, sizeof(animlib), "BOMBER");
-							format(animname, sizeof(animname), "BOM_Plant");
-							ApplyAnimation(playerid, animlib, animname, 4.1, 0, 0, 0, 0, 0, 1);
+							static animLib[24], animeName[24];
+							format(animLib, sizeof(animLib), "BOMBER");
+							format(animeName, sizeof(animeName), "BOM_Plant");
+							ApplyAnimation(playerid, animLib, animeName, 4.1, 0, 0, 0, 0, 0, 1);
 							return 1;
 						}
 					}
@@ -707,117 +716,137 @@ FuncaoItens(playerid, modelid, quantidade)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕ
 	{
 		case 19515:
 		{
+			if(quantidade == 1) {
 			PlayerInventario[playerid][modelid][Unidades]--;
 			StatsControl(playerid, 1, 100.0, 0);
 			AtualizarInventario(playerid, modelid);
+			}
 		}
 		case 331..371://
         {
-            GivePlayerWeapon(playerid, GetArmaInv(PlayerInventario[playerid][modelid][Slot]), PlayerInventario[playerid][modelid][Unidades]);
-            PlayerInventario[playerid][modelid][Unidades] = 0;
-            AtualizarInventario(playerid, modelid);
+			if(quantidade == 1) {
+				if(weaponMoment[playerid] == 0) {
+            		GivePlayerWeapon(playerid, GetArmaInv(PlayerInventario[playerid][modelid][Slot]), PlayerInventario[playerid][modelid][Unidades]);
+            		PlayerInventario[playerid][modelid][Unidades] = 0;
+            		AtualizarInventario(playerid, modelid);
+					weaponMoment[playerid] = 1;
+					weaponId[playerid] = PlayerInventario[playerid][modelid][Slot];
+				}
+			}
             return 1;
         }
         case 19823, 19820, 1486, 19824, 19822, 2958://Bebidas Alcoolicas
         {
+			if(quantidade == 1) {
         	PlayerInventario[playerid][modelid][Unidades]--;
         	StatsControl(playerid, 3, 0.0, 15);
         	if(life5 > 100){SetPlayerHealth(playerid, 100);}
-        	new animlib[24], animname[24];
+        	static animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "VENDING");
 			format(animname, sizeof(animname), "VEND_Drink_P");
 			ApplyAnimation(playerid, animlib, animname, 4.1, 0, 0, 0, 0, 0, 1);
             AtualizarInventario(playerid, modelid);
             SetPlayerSpecialAction(playerid, SPECIAL_ACTION_DRINK_BEER);
             SetPlayerSpecialAction(playerid, SPECIAL_ACTION_DRINK_WINE);
+			}
             return 1;
         }
         case 11722, 11723://Mostarda & Ketchup
         {
+			if(quantidade == 1) {
         	PlayerInventario[playerid][modelid][Unidades]--;
         	StatsControl(playerid, 4, 0.0, 30);
         	if(life5 > 100){SetPlayerHealth(playerid, 100);}
         	new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "FOOD");
 			format(animname, sizeof(animname), "EAT_Burger");
-            AtualizarInventario(playerid, modelid);
+            AtualizarInventario(playerid, modelid);}
             return 1;
         }
         case 19570, 1668, 1546, 2601://Leite & Agua & Refrigerante
         {
+			if(quantidade == 1) {
         	StatsControl(playerid, 3, 0.0, 50);
         	if(life5 > 100){SetPlayerHealth(playerid, 100);}
         	PlayerInventario[playerid][modelid][Unidades]--;
         	new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "VENDING");
 			format(animname, sizeof(animname), "VEND_Drink_P");
-            AtualizarInventario(playerid, modelid);
+            AtualizarInventario(playerid, modelid);}
             return 1;
         }
         case 1485, 19896, 19897://Baseado & Maco de Cigarro
         {
+			if(quantidade == 1) {
         	PlayerInventario[playerid][modelid][Unidades]--;
         	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_SMOKE_CIGGY);
 			new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "SMOKING");
 			format(animname, sizeof(animname), "M_smk_drag");
-        	AtualizarInventario(playerid, modelid);
+        	AtualizarInventario(playerid, modelid);}
             return 1;
         }
         case 19574, 19575, 19576://Frutas
         {
+			if(quantidade == 1) {
         	PlayerInventario[playerid][modelid][Unidades]--;
         	StatsControl(playerid, 4, 0.0, 50);
         	if(life5 > 100){SetPlayerHealth(playerid, 100);}
         	new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "FOOD");
 			format(animname, sizeof(animname), "EAT_Burger");
-            AtualizarInventario(playerid, modelid);
+            AtualizarInventario(playerid, modelid);}
             return 1;
         }
         case 2703, 2880, 2768, 19094, 2769, 19579, 19630://Hamburgers & Peixes & Taco & Pão
         {
+			if(quantidade == 1) {
         	PlayerInventario[playerid][modelid][Unidades]--;
         	StatsControl(playerid, 4, 0.0, 50);
      		if(life5 > 100){SetPlayerHealth(playerid, 100);}   
         	new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "FOOD");
 			format(animname, sizeof(animname), "EAT_Burger");
-            AtualizarInventario(playerid, modelid);
+            AtualizarInventario(playerid, modelid);}
             return 1;
         }
         case 2881, 2702, 1582, 19580://Pizzas
         {
+			if(quantidade == 1) {
         	PlayerInventario[playerid][modelid][Unidades]--;
         	StatsControl(playerid, 4, 0.0, 50);
         	if(life5 > 100){SetPlayerHealth(playerid, 100);}
         	new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "FOOD");
 			format(animname, sizeof(animname), "EAT_Burger");
-            AtualizarInventario(playerid, modelid);
+            AtualizarInventario(playerid, modelid);}
             return 1;
         }
         case 2709://Remedio
         {
+			if(quantidade == 1) {
         	StatsControl(playerid, 2, 25.0, 0);
         	if(life5 > 100){SetPlayerHealth(playerid, 100);}
         	PlayerInventario[playerid][modelid][Unidades]--;
-        	AtualizarInventario(playerid, modelid);
+        	AtualizarInventario(playerid, modelid);}
             return 1;
         }
         case 11738://Remedio Grande
         {
+			if(quantidade == 1) {
         	StatsControl(playerid, 2, 50.0, 0);
         	if(life5 > 100){SetPlayerHealth(playerid, 100);}
         	PlayerInventario[playerid][modelid][Unidades]--;
-        	AtualizarInventario(playerid, modelid);
+        	AtualizarInventario(playerid, modelid);}
             return 1;
         }
         case 1212:
         {
+			if(quantidade >= 1) {
         	GivePlayerMoney(playerid, PlayerInventario[playerid][modelid][Unidades]);
         	PlayerInventario[playerid][modelid][Unidades] = 0;
         	AtualizarInventario(playerid, modelid);
+			}
         	return 1;
 		}
 		case 2061:

@@ -16,6 +16,7 @@
 #include "../Geral/Base/Groups/Group.inc"
 #include "../Geral/Server/Textdraws/Hud.inc"
 #include "../Geral/Base/User/Connection/ConnectionQuery.inc"
+#include "../Geral/Base/User/Connection/Selector.inc"
 
 //CARS
 

@@ -21,8 +21,6 @@ public UserStats(playerid) {
 
     PlayerTextDrawSetStringf(playerid, Hud[playerid][2], "%d", PlayerStats[playerid][Eat]);
     PlayerTextDrawSetStringf(playerid, Hud[playerid][3], "%d", PlayerStats[playerid][Water]);
-
-
     return 1;
 }
 
@@ -38,7 +36,6 @@ public Load_Users(playerid) {
         
         PlayerTextDrawSetStringf(playerid, Hud[playerid][2], "%d", PlayerStats[playerid][Eat]);
         PlayerTextDrawSetStringf(playerid, Hud[playerid][3], "%d", PlayerStats[playerid][Water]);
-
     } else {
         PlayerStats[playerid][life] = 100.0;
         PlayerStats[playerid][armour] = 100.0;
@@ -109,7 +106,7 @@ hook OnPlayerSpawn(playerid){
         PlayerTextDrawShow(playerid, PlayerText:Hud[playerid][i]);
     }
 
-    Timer[playerid] = SetTimerEx("UserStats", 10000, true, "i", playerid);
+    Timer[playerid] = SetTimerEx("UserStats", 1000, true, "i", playerid);
 
     return 1;
 }
@@ -129,6 +126,8 @@ hook OnPlayerDisconnect(playerid, reason) {
                 `water`='%d' \
                 WHERE `hex`='%i'", life, armour, PlayerStats[playerid][Eat], PlayerStats[playerid][Water], hexUser[playerid][hex]);
     mysql_query(ConexaoSQL, query);
+
+    printf("E - %d W - %d", PlayerStats[playerid][Eat], PlayerStats[playerid][Water]);
 
     KillTimer(Timer[playerid]);
 

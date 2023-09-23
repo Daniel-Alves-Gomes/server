@@ -228,14 +228,14 @@ stock DumpProfilingTime(const name[], const timings[], iters, size = sizeof (tim
 
 #if defined _samp_included && !defined YSI_NO_GET_IP
 	stock
-		YSI_gPlayerIP[MAX_PLAYERS + 1] = {-1, ...};
+		YSI_gPlayerIP[MAX_PLAYERS + 1][15 + 1] = {-1, ...};
 
 	public OnPlayerConnect(playerid)
 	{
 		new
 			ip[16];
 		GetPlayerIp(playerid, ip, sizeof (ip)),
-		YSI_gPlayerIP[playerid] = IPToInt(ip);
+		YSI_gPlayerIP[playerid] = ip;
 		#if defined _y_utils_OnPlayerConnect
 			_y_utils_OnPlayerConnect(playerid);
 		#endif

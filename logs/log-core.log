@@ -395,3 +395,34 @@
 [18:06:29] [INFO] received Windows console close event; shutting log-core down
 [18:32:10] [INFO] received Windows console close event; shutting log-core down
 [18:50:19] [INFO] received Windows console close event; shutting log-core down
+[21:54:04] [INFO] received Windows console close event; shutting log-core down
+[14:01:31] [INFO] received Windows console close event; shutting log-core down
+[14:02:48] [INFO] received Windows console close event; shutting log-core down
+[14:04:53] [INFO] received Windows console close event; shutting log-core down
+[14:05:48] [INFO] received Windows console close event; shutting log-core down
+[14:08:09] [INFO] received Windows console close event; shutting log-core down
+[14:08:51] [INFO] received Windows console close event; shutting log-core down
+[14:10:36] [INFO] received Windows console close event; shutting log-core down
+[14:14:23] [INFO] received Windows console close event; shutting log-core down
+[14:28:54] [INFO] received Windows console close event; shutting log-core down
+[14:30:07] [INFO] received Windows console close event; shutting log-core down
+[14:31:25] [INFO] received Windows console close event; shutting log-core down
+[14:32:34] [INFO] received Windows console close event; shutting log-core down
+[14:33:53] [INFO] received Windows console close event; shutting log-core down
+[14:35:01] [ERROR] exception 0XE06D7363 (<unknown>) from Unhandled Exception Handler catched; shutting log-core down
+[14:35:03] [INFO] received Windows console close event; shutting log-core down
+[14:36:35] [INFO] received Windows console close event; shutting log-core down
+[14:36:46] [ERROR] exception 0XE06D7363 (<unknown>) from Unhandled Exception Handler catched; shutting log-core down
+[14:38:16] [INFO] received Windows console close event; shutting log-core down
+[14:40:26] [INFO] received Windows console close event; shutting log-core down
+[14:42:17] [INFO] received Windows console close event; shutting log-core down
+[14:43:26] [INFO] received Windows console close event; shutting log-core down
+[14:47:34] [INFO] received Windows console close event; shutting log-core down
+[14:49:33] [INFO] received Windows console close event; shutting log-core down
+[14:50:57] [INFO] received Windows console close event; shutting log-core down
+[14:52:00] [INFO] received Windows console close event; shutting log-core down
+[14:52:35] [INFO] received Windows console close event; shutting log-core down
+[14:53:34] [INFO] received Windows console close event; shutting log-core down
+[14:55:29] [INFO] received Windows console close event; shutting log-core down
+[15:02:05] [INFO] received Windows console close event; shutting log-core down
+[18:48:43] [ERROR] exception 0XE06D7363 (<unknown>) from Unhandled Exception Handler catched; shutting log-core down

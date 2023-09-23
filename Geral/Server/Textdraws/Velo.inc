@@ -217,7 +217,7 @@ hook OnPlayerExitVehicle(playerid, vehicleid) {
     return 1;
 }
 
-AbrirVelo(playerid, vehicleid) {
+stock AbrirVelo(playerid, vehicleid) {
     new veloVehicle = VelocidadeDoVeiculo(vehicleid);
     new sstats[128];
     for(new i = 0; i < 15; i++) {
@@ -239,7 +239,7 @@ AbrirVelo(playerid, vehicleid) {
 }
 
 
-FecharVelo(playerid) {
+stock FecharVelo(playerid) {
     for(new i = 0; i < 15; i++) {
         PlayerTextDrawHide(playerid, Veloc[playerid][i]);
     }

@@ -149,7 +149,7 @@ stock WORK_Prox(playerid) {
         if(IsPlayerInRangeOfPoint(playerid, 1.5, workBench[i][x], workBench[i][y], workBench[i][z])) {
             if(infoOrg[playerid][Organizacao] == workBench[i][Perm]) {
                 if(strcmp(workBench[i][Type], "Armas") == 0) {
-                typeInteger = 1;
+                    typeInteger = 1;
                 }
                 if(strcmp(workBench[i][Type], "Drogas") == 0) {
                     typeInteger = 2;
