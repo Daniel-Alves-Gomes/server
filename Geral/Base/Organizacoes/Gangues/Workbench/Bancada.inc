@@ -34,9 +34,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
             switch(listitem) {
                 case 0:
                 {
-                    if(CheckItem(playerid, 354, 1)) {
+                    if(CheckItem(playerid, 1022, 1)) {
                         if(CheckItem(playerid, 1145, 15)) {
-                            RemoveItens(playerid, 354, 1);
+                            RemoveItens(playerid, 1022, 1);
                             RemoveItens(playerid, 1145, 15);
                             GanharItem(playerid, 356, 1);
                         }
@@ -44,9 +44,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                 }
                 case 1:
                 {
-                    if(CheckItem(playerid, 354, 1)) {
+                    if(CheckItem(playerid, 1022, 1)) {
                         if(CheckItem(playerid, 1145, 10)) {
-                            RemoveItens(playerid, 354, 1);
+                            RemoveItens(playerid, 1022, 1);
                             RemoveItens(playerid, 1145, 10);
                             GanharItem(playerid, 355, 1);
                         }
@@ -54,9 +54,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                 }
                 case 2:
                 {
-                    if(CheckItem(playerid, 354, 1)) {
+                    if(CheckItem(playerid, 1022, 1)) {
                         if(CheckItem(playerid, 1145, 5)) {
-                            RemoveItens(playerid, 354, 1);
+                            RemoveItens(playerid, 1022, 1);
                             RemoveItens(playerid, 1145, 5);
                             GanharItem(playerid, 348, 1);
                         }
@@ -64,9 +64,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                 }
                 case 3:
                 {
-                    if(CheckItem(playerid, 354, 1)) {
+                    if(CheckItem(playerid, 1022, 1)) {
                         if(CheckItem(playerid, 1145, 4)) {
-                            RemoveItens(playerid, 354, 1);
+                            RemoveItens(playerid, 1022, 1);
                             RemoveItens(playerid, 1145, 4);
                             GanharItem(playerid, 347, 1);
                         }
@@ -192,6 +192,7 @@ stock CreateWorkBench(const permission[], const type[], Float:xO, Float:yO, Floa
 }
 
 CMD:criarbancada(playerid, params[]) {
+    if(V_Morto(playerid)) return 1;
     new PERMISSION[250], TYPE[250];
     if(V_User(playerid, "Staff")) {
         if(sscanf(params, "s[250]s[250]", PERMISSION, TYPE)) {
@@ -206,6 +207,7 @@ CMD:criarbancada(playerid, params[]) {
 }
 
 CMD:bancada(playerid) {
+    if(V_Morto(playerid)) return 1;
     WORK_Prox(playerid);
     return 1;
 }

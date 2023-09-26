@@ -7,24 +7,14 @@
 #include <foreach>
 #include <sscanf2>
 #include <streamer>
-#include <fuelvehicle>
 #include <YSI-Includes\YSI_Coding\y_hooks>
 #include <YSI-Includes\YSI_Players\y_android>
 #include "../Geral/Server/Database_Central.inc"
 #include "../Geral/Server/Config/Formats/Format.inc"
 #include "../Geral/Base/Groups/Group.inc"
-#include "../Geral/Server/Textdraws/Hud.inc"
 
 #include "../Geral/Base/User/Connection/ConnectionQuery.inc"
-
-//CARS
-
-#include "../Geral/Base/Vehicles/Vehicle.inc"
-#include "../Geral/Base/Vehicles/Stats/Create.inc"
-#include "../Geral/Base/Vehicles/Stats/Engine.inc"
-#include "../Geral/Server/Textdraws/Velo.inc"
-
-//
+#include "../Geral/Base/User/Profiles/DeathQuery.inc"
 
 #include "../Geral/Base/Notify/Notify.inc"
 #include "../Geral/Base/Inventory/InventoryClass.inc"
@@ -77,4 +67,11 @@ stock VelocidadeDoVeiculo(vehicleid) {
 	new Float:xPos[3];
 	GetVehicleVelocity(vehicleid, xPos[0], xPos[1], xPos[2]);
 	return floatround(floatsqroot(xPos[0] * xPos[0] + xPos[1] * xPos[1] + xPos[2] * xPos[2]) * 170.00);
+}
+
+CMD:car(playerid) {
+	new Float:xC, Float:yC, Float:zC;
+	GetPlayerPos(playerid, xC,yC,zC);
+	CreateVehicle(560, Float:xC, Float:yC, Float:zC, 0, 0, 0, 0, 0);
+	return 1;
 }

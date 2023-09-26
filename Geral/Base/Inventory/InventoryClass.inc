@@ -110,6 +110,7 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 }
 
 CMD:garmas(playerid) {
+	if(V_Morto(playerid)) return 1;
 	new weaponGarmas = GetPlayerWeapon(playerid);
 	new ammo = GetPlayerAmmo(playerid);
 	if(weaponGarmas != 0) {
@@ -130,6 +131,7 @@ CMD:garmas(playerid) {
 
 CMD:pegaritem(playerid)
 {
+	if(V_Morto(playerid)) return 1;
     new Float:x, Float:y, Float:z;
     for(new i = 0; i < sizeof(DropItemSlot); i++)
     {
@@ -160,6 +162,7 @@ CMD:pegaritem(playerid)
  
 CMD:inventario(playerid)
 {
+	if(V_Morto(playerid)) return 1;
 	new str[64];
 	CriarInventario(playerid);
 	if(InventarioAberto[playerid])
@@ -203,6 +206,7 @@ CMD:inventario(playerid)
  
 CMD:daritem(playerid, const params[])
 {
+	if(V_Morto(playerid)) return 1;
 	new id, item, quantia;
 	new strNotf[350];
 	if(V_User(playerid, "Staff"))
@@ -378,7 +382,7 @@ ItemNomeInv(itemid) // AQUI VOCÊ PODE ADICIONAR OS ID DOS ITENS E SETAR SEU NOM
 		case 630: name = "Planta Maconha";
 		case 1575: name = "Pasta Base";
 		case 19873: name = "Papel";
-		case 354: name = "Cano";
+		case 1022: name = "Cano";
 		case 1145: name = "Chapa de Metal";
 		case 322: name = "Capsula";
 		case 2061: name = "Municao";
@@ -703,8 +707,6 @@ AtualizarInventario(playerid, i)
 		PlayerTextDrawSetString(playerid, DrawInv[playerid][38], str);
 		PlayerTextDrawSetPreviewRot(playerid, DrawInv[playerid][i], 0.000000, 0.000000, 0.000000, 1);
 	}
-	PlayerTextDrawShow(playerid, DrawInv[playerid][38]);
-	PlayerTextDrawShow(playerid, DrawInv[playerid][i]);
 	SalvarInventario(playerid);
     return 1;
 }
@@ -718,7 +720,6 @@ FuncaoItens(playerid, modelid, quantidade)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕ
 		{
 			if(quantidade == 1) {
 			PlayerInventario[playerid][modelid][Unidades]--;
-			StatsControl(playerid, 1, 100.0, 0);
 			AtualizarInventario(playerid, modelid);
 			}
 		}
@@ -739,7 +740,6 @@ FuncaoItens(playerid, modelid, quantidade)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕ
         {
 			if(quantidade == 1) {
         	PlayerInventario[playerid][modelid][Unidades]--;
-        	StatsControl(playerid, 3, 0.0, 15);
         	if(life5 > 100){SetPlayerHealth(playerid, 100);}
         	static animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "VENDING");
@@ -755,7 +755,6 @@ FuncaoItens(playerid, modelid, quantidade)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕ
         {
 			if(quantidade == 1) {
         	PlayerInventario[playerid][modelid][Unidades]--;
-        	StatsControl(playerid, 4, 0.0, 30);
         	if(life5 > 100){SetPlayerHealth(playerid, 100);}
         	new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "FOOD");
@@ -766,7 +765,6 @@ FuncaoItens(playerid, modelid, quantidade)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕ
         case 19570, 1668, 1546, 2601://Leite & Agua & Refrigerante
         {
 			if(quantidade == 1) {
-        	StatsControl(playerid, 3, 0.0, 50);
         	if(life5 > 100){SetPlayerHealth(playerid, 100);}
         	PlayerInventario[playerid][modelid][Unidades]--;
         	new animlib[24], animname[24];
@@ -790,7 +788,6 @@ FuncaoItens(playerid, modelid, quantidade)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕ
         {
 			if(quantidade == 1) {
         	PlayerInventario[playerid][modelid][Unidades]--;
-        	StatsControl(playerid, 4, 0.0, 50);
         	if(life5 > 100){SetPlayerHealth(playerid, 100);}
         	new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "FOOD");
@@ -802,7 +799,6 @@ FuncaoItens(playerid, modelid, quantidade)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕ
         {
 			if(quantidade == 1) {
         	PlayerInventario[playerid][modelid][Unidades]--;
-        	StatsControl(playerid, 4, 0.0, 50);
      		if(life5 > 100){SetPlayerHealth(playerid, 100);}   
         	new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "FOOD");
@@ -814,7 +810,6 @@ FuncaoItens(playerid, modelid, quantidade)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕ
         {
 			if(quantidade == 1) {
         	PlayerInventario[playerid][modelid][Unidades]--;
-        	StatsControl(playerid, 4, 0.0, 50);
         	if(life5 > 100){SetPlayerHealth(playerid, 100);}
         	new animlib[24], animname[24];
 			format(animlib, sizeof(animlib), "FOOD");
@@ -825,7 +820,6 @@ FuncaoItens(playerid, modelid, quantidade)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕ
         case 2709://Remedio
         {
 			if(quantidade == 1) {
-        	StatsControl(playerid, 2, 25.0, 0);
         	if(life5 > 100){SetPlayerHealth(playerid, 100);}
         	PlayerInventario[playerid][modelid][Unidades]--;
         	AtualizarInventario(playerid, modelid);}
@@ -834,7 +828,6 @@ FuncaoItens(playerid, modelid, quantidade)//  AQUI VOCÊ PODE DEFINIR AS FUNÇÕ
         case 11738://Remedio Grande
         {
 			if(quantidade == 1) {
-        	StatsControl(playerid, 2, 50.0, 0);
         	if(life5 > 100){SetPlayerHealth(playerid, 100);}
         	PlayerInventario[playerid][modelid][Unidades]--;
         	AtualizarInventario(playerid, modelid);}
@@ -989,7 +982,7 @@ IsValidItemInv(itemid) //AQUI VOCÊ DEVE DEFINIR OS ID'S DOS ITENS PARA SER VALI
 		19134, 19904, 19515, 19142, 19315, 19527, 19317, 18688, 18702, 18728, 19605, 19606,
 		19607, 19577, 1485, 19574, 19575, 19576, 2703, 2880, 19883, 19896, 19897, 1546, 2768, 1212,
 		2601, 19835, 2881, 2702, 2769, 2709, 19579, 19630, 19094, 1582, 19580, 19602, 11738,
-		1654, 11736, 1650, 1252, 19893, 19921, 2226, 19054, 19056, 19055, 19057,354,1145,19058: return 1;
+		1654, 11736, 1650, 1252, 19893, 19921, 2226, 19054, 19056, 19055, 19057,354,1022,1145,19058: return 1;
 	}
 	return 0;
 }

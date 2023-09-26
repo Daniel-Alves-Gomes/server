@@ -80,15 +80,15 @@ hook OnPlayerConnect(playerid) {
     return 1;
 }
 
-hook OnPlayerDisconnect(playerid, reason) {
-    new Float:Pos[MAX_PLAYERS][3];
-    new Query[128];
-    GetPlayerPos(playerid, Pos[playerid][0], Pos[playerid][1], Pos[playerid][2]);
+hook OnPlayerUpdate(playerid) {
+    new Float:PosD[MAX_PLAYERS][3];
+    static Query[128];
+    GetPlayerPos(playerid, PosD[playerid][0], PosD[playerid][1], PosD[playerid][2]);
     mysql_format(ConexaoSQL, Query, sizeof(Query), "UPDATE `server_accounts` SET \
         `x`='%f', \
         `y`='%f', \
         `z`='%f' \
-        WHERE `nome`='%s'", Pos[playerid][0], Pos[playerid][1], Pos[playerid][2], GetPlayerNameEx(playerid));
+        WHERE `nome`='%s'", PosD[playerid][0], PosD[playerid][1], PosD[playerid][2], GetPlayerNameEx(playerid));
     mysql_query(ConexaoSQL, Query);
     return 1;
 }
