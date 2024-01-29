@@ -92,12 +92,14 @@ public OnPlayerDeath(playerid, killerid, reason) {
     morteConfigs[playerid][Morreu] = 1;
     SpawnPlayer(playerid);
     SetSpawnInfo(playerid, NO_TEAM, getsUser[playerid][Skin], morteConfigs[playerid][PosMX], morteConfigs[playerid][PosMY], morteConfigs[playerid][PosMZ], 0.0, 0, 0, 0, 0, 0, 0); 
+    ResetPlayerMoney(playerid);
+    ResetPlayerWeapons(playerid);
     return 1;
 }
 
 hook OnPlayerUpdate(playerid) {
-    GetPlayerPos(playerid, morteConfigs[playerid][PosMX], morteConfigs[playerid][PosMY], morteConfigs[playerid][PosMZ]);
     if(mortoUpdate[playerid] == 0){
+        GetPlayerPos(playerid, morteConfigs[playerid][PosMX], morteConfigs[playerid][PosMY], morteConfigs[playerid][PosMZ]);
         if(morteConfigs[playerid][Morreu] == 1) {
             mortoUpdate[playerid] = 1;
             mortoTempo[playerid] = 120;
@@ -118,7 +120,8 @@ stock V_Morto(playerid) {
 }
 
 CMD:desistir(playerid) {
-    if(mortoTempo[playerid] < 1) {
+    if(V_Morto(playerid) == 1) return 1;
+    if(mortoTempo[playerid] == 0) {
         PlayerTextDrawShow(playerid, MorteTD[playerid][3]);
         KillTimer(mortoTimer[playerid]);
         mortoUpdate[playerid] = 0;
@@ -126,6 +129,8 @@ CMD:desistir(playerid) {
         new Query[128];
         mysql_format(ConexaoSQL, Query, sizeof(Query), "DELETE FROM inventario WHERE hex = %d", hexUser[playerid][hex]);
         mysql_query(ConexaoSQL, Query);
+        ResetPlayerMoney(playerid);
+        ResetPlayerWeapons(playerid);
     }
     return 1;
 }

@@ -24,7 +24,7 @@ public GET_StatusOrg(playerid) {
     if(cache_num_rows() > 0) {
         cache_get_value_name_int(0, "hex", hexUser[playerid][hex]);
         new Query[128];
-        mysql_format(ConexaoSQL, Query, sizeof(Query), "SELECT * FROM `org` WHERE `hex`='%i'", hexUser[playerid][hex]);
+        mysql_format(ConexaoSQL, Query, sizeof(Query), "SELECT * FROM `orgs_user` WHERE `hex`='%i'", hexUser[playerid][hex]);
         mysql_tquery(ConexaoSQL, Query, "GET_Orgs", "i", playerid);
     } else {
         Kick(playerid);

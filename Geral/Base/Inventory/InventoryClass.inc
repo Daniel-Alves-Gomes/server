@@ -38,6 +38,15 @@ static stock PlayerName(playerid)
 	GetPlayerName(playerid, Name, sizeof Name);
 	return Name;
 }
+
+stock INV_Enable(playerid) {
+	if(InventarioAberto[playerid] == 1)
+	{ 
+		return 1;
+	} else {
+		return 0;
+	}
+}
  
 hook OnPlayerConnect(playerid)
 {
@@ -58,8 +67,26 @@ hook OnPlayerDisconnect(playerid, reason)
 	return 1;
 }
 
-stock QuantidadeSelect(playerid) {
+stock QuantidadeSelect(playerid)
+{
 	ShowPlayerDialog(playerid, 1912, DIALOG_STYLE_INPUT, "QUANTIDADE SELETOR", "1 para cima", "Confirmar", "Sair");
+	return 1;
+}
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	if(PRESSED(KEY_CROUCH)) {
+		if(INV_Enable(playerid)) {
+			for(new i = 0; i < 40; ++i)
+			{
+				PlayerTextDrawHide(playerid, DrawInv[playerid][i]);
+			}
+			InventarioAberto[playerid] = 0;
+			CancelSelectTextDraw(playerid);
+		} else {
+
+		}
+	}
 	return 1;
 }
 
@@ -70,13 +97,13 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 	{
 		if(playertextid == DrawInv[playerid][i])
 		{
-			if(PlayerInventario[playerid][i][Slot] == 0)
+			if(PlayerInventario[playerid][i][Slot] == -1)
 			{
 				text = " ";
 			}
 			else
 			{
-				format(str, sizeof(str), "%s - %s unidades", ItemNomeInv(PlayerInventario[playerid][i][Slot]), ConvertMoney(PlayerInventario[playerid][i][Unidades]));
+				format(str, sizeof(str), "%s - %hs unidades", ItemNomeInv(PlayerInventario[playerid][i][Slot]), ConvertMoney(PlayerInventario[playerid][i][Unidades]));
 				text = str;
 			}
 			
@@ -185,7 +212,7 @@ CMD:inventario(playerid)
 		for(new i = 1; i < 33; ++i)
 		{
 			PlayerTextDrawSetPreviewModel(playerid, DrawInv[playerid][i], PlayerInventario[playerid][i][Slot]);
-			if(PlayerInventario[playerid][i][Slot] == 0)
+			if(PlayerInventario[playerid][i][Slot] == -1)
 			{
 				PlayerTextDrawSetPreviewRot(playerid, DrawInv[playerid][i], 0.000000, 0.000000, 0.000000, 999);
 			}
@@ -203,7 +230,7 @@ CMD:inventario(playerid)
 	}
 	return 1;
 }
- 
+
 CMD:daritem(playerid, const params[])
 {
 	if(V_Morto(playerid)) return 1;
@@ -249,16 +276,19 @@ GanharItem(playerid, itemid, quantia)
 	{
 		if(PlayerInventario[playerid][i][Slot] == itemid)
 		{
-			PlayerInventario[playerid][i][Slot] = itemid;
 			PlayerInventario[playerid][i][Unidades]+= quantia;
 			SalvarInventario(playerid);
+			AtualizarInventario(playerid, i);
+			SendClientMessagef(playerid, -1, "Você ganhou o item %s com a quantidade %d", ItemNomeInv(itemid), quantia);
 			return 1;
 		}
-		else if(PlayerInventario[playerid][i][Slot] == 0)
+		else if(PlayerInventario[playerid][i][Slot] == -1)
 		{
 			PlayerInventario[playerid][i][Slot] = itemid;
 			PlayerInventario[playerid][i][Unidades] = quantia;
 			SalvarInventario(playerid);
+			AtualizarInventario(playerid, i);
+			SendClientMessagef(playerid, -1, "Você ganhou o item %s com a quantidade %d", ItemNomeInv(itemid), quantia);
 			return 1;
 		}
 	}
@@ -286,7 +316,7 @@ PF::CreateInventoryCallback(playerid)
 		mysql_query(ConexaoSQL, query);
 		for(new i = 1; i < 33; i++) {
 			mysql_format(ConexaoSQL, query, sizeof(query), "UPDATE `inventario` SET \
-                `slot%i`='0' \
+                `slot%i`='-1' \
                 WHERE `player_id`='%i'", i, hexUser[playerid][hex]);
             mysql_query(ConexaoSQL, query);
 		}
@@ -323,13 +353,10 @@ PF::LoadPlayerInventoryCallback(playerid)
 			format(str2, sizeof(str2), "slot%d_unidade", i); 
 			cache_get_value_name_int(0, str1, PlayerInventario[playerid][i][Slot]);
 			cache_get_value_name_int(0, str2, PlayerInventario[playerid][i][Unidades]);
-		}
-        
-        SendClientMessage(playerid, -1, "Seu inventário foi carregado do banco de dados.");
+		} 
     }
     else
     {
-        SendClientMessage(playerid, -1, "Seu inventário não foi encontrado no banco de dados.");
     }
     return 1;
 }
@@ -355,7 +382,7 @@ PF::SalvarInventario(playerid)
 
 CheckInventario(playerid, itemid)
 {
-	for(new i = 1; i < 33; ++i)
+	for(new i = 1; i < 32; ++i)
 	{
 		if(PlayerInventario[playerid][i][Slot] == itemid || PlayerInventario[playerid][i][Unidades] == 0) return 1;
 	}
@@ -363,14 +390,14 @@ CheckInventario(playerid, itemid)
 }
 
 CheckItem(playerid, itemid, quantia) {
-	for(new i = 1; i < 33; ++i)
+	for(new i = 1; i < 32; ++i)
 	{
 		if(PlayerInventario[playerid][i][Slot] == itemid || PlayerInventario[playerid][i][Unidades] >= quantia) return 1;
 	}
 	return 0;
 }
  
-ItemNomeInv(itemid) // AQUI VOCÊ PODE ADICIONAR OS ID DOS ITENS E SETAR SEU NOME (OBS: TOME CUIDADO AO OPTAR O USO DE LOOPS)
+ItemNomeInv(itemid)
 {
 	new name[25];
 	format(name, 25, "Nenhum");
@@ -383,7 +410,7 @@ ItemNomeInv(itemid) // AQUI VOCÊ PODE ADICIONAR OS ID DOS ITENS E SETAR SEU NOM
 		case 1575: name = "Pasta Base";
 		case 19873: name = "Papel";
 		case 1022: name = "Cano";
-		case 1145: name = "Chapa de Metal";
+		case 850: name = "Chapa de Metal";
 		case 322: name = "Capsula";
 		case 2061: name = "Municao";
 		case 11746: name = "Chave";
@@ -584,7 +611,7 @@ ItemNomeInv(itemid) // AQUI VOCÊ PODE ADICIONAR OS ID DOS ITENS E SETAR SEU NOM
 		case 368: name = "Oculos Noturno";
 		case 369: name = "Osculo Termal";
 		case 371: name = "Parachute";
-		default: name = "Nenhum";
+		case 999999: name = "Nenhum";
 	}
     return name;
 }
@@ -682,6 +709,7 @@ RemoveItens(playerid, itemid, quantia) {
 		if(PlayerInventario[playerid][i][Slot] == itemid || PlayerInventario[playerid][i][Unidades] >= quantia) {
 			PlayerInventario[playerid][i][Unidades] -= quantia;
 			AtualizarInventario(playerid, i);
+			SendClientMessagef(playerid, -1, "Foi removido o item %s com a quantidade %d", ItemNomeInv(850), quantia);
 			return 1;
 		}
 	}
@@ -693,7 +721,7 @@ AtualizarInventario(playerid, i)
     if(PlayerInventario[playerid][i][Unidades] < 1)
     {
         PlayerInventario[playerid][i][Unidades] = 0;
-        PlayerInventario[playerid][i][Slot] = 0;
+        PlayerInventario[playerid][i][Slot] = -1;
     }
     if(PlayerInventario[playerid][i][Slot] == 0)
 	{
@@ -982,7 +1010,7 @@ IsValidItemInv(itemid) //AQUI VOCÊ DEVE DEFINIR OS ID'S DOS ITENS PARA SER VALI
 		19134, 19904, 19515, 19142, 19315, 19527, 19317, 18688, 18702, 18728, 19605, 19606,
 		19607, 19577, 1485, 19574, 19575, 19576, 2703, 2880, 19883, 19896, 19897, 1546, 2768, 1212,
 		2601, 19835, 2881, 2702, 2769, 2709, 19579, 19630, 19094, 1582, 19580, 19602, 11738,
-		1654, 11736, 1650, 1252, 19893, 19921, 2226, 19054, 19056, 19055, 19057,354,1022,1145,19058: return 1;
+		1654, 11736, 1650, 1252, 19893, 19921, 2226, 19054, 19056, 19055, 19057,354,1022,850,19058: return 1;
 	}
 	return 0;
 }

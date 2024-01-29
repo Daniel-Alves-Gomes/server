@@ -24,8 +24,7 @@
 forward InfoUser(playerid);
 
 main()
-{
-}
+{}
 
 
 public OnGameModeInit() {

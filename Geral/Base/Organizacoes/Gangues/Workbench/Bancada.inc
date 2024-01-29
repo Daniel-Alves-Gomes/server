@@ -28,106 +28,6 @@ hook OnGameModeInit() {
     return 1;
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
-    if(dialogid == DIALOG_ARMAS) {
-        if(response) {
-            switch(listitem) {
-                case 0:
-                {
-                    if(CheckItem(playerid, 1022, 1)) {
-                        if(CheckItem(playerid, 1145, 15)) {
-                            RemoveItens(playerid, 1022, 1);
-                            RemoveItens(playerid, 1145, 15);
-                            GanharItem(playerid, 356, 1);
-                        }
-                    }
-                }
-                case 1:
-                {
-                    if(CheckItem(playerid, 1022, 1)) {
-                        if(CheckItem(playerid, 1145, 10)) {
-                            RemoveItens(playerid, 1022, 1);
-                            RemoveItens(playerid, 1145, 10);
-                            GanharItem(playerid, 355, 1);
-                        }
-                    }
-                }
-                case 2:
-                {
-                    if(CheckItem(playerid, 1022, 1)) {
-                        if(CheckItem(playerid, 1145, 5)) {
-                            RemoveItens(playerid, 1022, 1);
-                            RemoveItens(playerid, 1145, 5);
-                            GanharItem(playerid, 348, 1);
-                        }
-                    }
-                }
-                case 3:
-                {
-                    if(CheckItem(playerid, 1022, 1)) {
-                        if(CheckItem(playerid, 1145, 4)) {
-                            RemoveItens(playerid, 1022, 1);
-                            RemoveItens(playerid, 1145, 4);
-                            GanharItem(playerid, 347, 1);
-                        }
-                    }
-                }
-            }
-        }
-    } else if(dialogid == DIALOG_MUNI) {
-        if(response) {
-            switch(listitem) {
-                case 0:
-                {
-                    if(CheckItem(playerid, 322, 10)) {
-                        if(CheckItem(playerid, 1279, 10)) {
-                            RemoveItens(playerid, 322, 10);
-                            RemoveItens(playerid, 1279, 10);
-                            GanharItem(playerid, 2061, 10);
-                        }
-                    }
-                }
-                case 1:
-                {
-                    if(CheckItem(playerid, 322, 50)) {
-                        if(CheckItem(playerid, 1279, 50)) {
-                            RemoveItens(playerid, 322, 50);
-                            RemoveItens(playerid, 1279, 50);
-                            GanharItem(playerid, 2061, 50);
-                        }
-                    }
-                }
-                case 2:
-                {
-                    if(CheckItem(playerid, 322, 1)) {
-                        if(CheckItem(playerid, 1279, 1)) {
-                            RemoveItens(playerid, 322, 1);
-                            RemoveItens(playerid, 1279, 1);
-                            GanharItem(playerid, 2061, 1);
-                        }
-                    }
-                }
-            }
-        }
-    } else if(dialogid == DIALOG_DROGAS) {
-        if(response) {
-            switch(listitem) {
-                case 0:
-                {
-                    if(CheckItem(playerid, 19873, 1)) {
-                        if(CheckItem(playerid, 1575, 1)) {
-                            RemoveItens(playerid, 19873, 1);
-                            RemoveItens(playerid, 1575, 1);
-                            GanharItem(playerid, 3044, 1);
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return 0;
-}
-
 public SET_Workbenchs(){
     if(cache_num_rows() > 0) {
         for(new i = 0; i < cache_num_rows(); i++) {
@@ -196,7 +96,7 @@ CMD:criarbancada(playerid, params[]) {
     new PERMISSION[250], TYPE[250];
     if(V_User(playerid, "Staff")) {
         if(sscanf(params, "s[250]s[250]", PERMISSION, TYPE)) {
-            Notificar(playerid,"WORKBENCH", "Nao foram especificados os parametros corretos.");
+            Notificar(playerid, "WORKBENCH", "Nao foram especificados os parametros corretos.");
         } else {
             new Float:POSU[3];
             GetPlayerPos(playerid, POSU[0], POSU[1], POSU[2]);

@@ -23,7 +23,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]) {
                 {
                     mysql_format(ConexaoSQL, QueryUser, sizeof(QueryUser), "UPDATE `server_accounts` SET \
                         `skin`='154', \
-                        `tipo`='M' \
+                        `tipo`='F' \
                         WHERE `hex`='%d'", hexUser[playerid][hex]);
                     mysql_query(ConexaoSQL, QueryUser);
                     SpawnPlayer(playerid);
